@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Saper Vedere — a living codex of Leonardo da Vinci</title>
+<meta name="description" content="A scroll-through Renaissance codex: Leonardo's method turned into the design rules of the page that describes it. Annotated paintings, blueprint folios, three machines rebuilt in three dimensions, two paintings you can walk into, and a mirror to write backwards in.">
+<meta name="color-scheme" content="light">
+
+<meta property="og:title" content="Saper Vedere — a living codex of Leonardo da Vinci">
+<meta property="og:description" content="Leonardo's method, turned into the design rules of the page that describes it.">
+<meta property="og:type" content="website">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://upload.wikimedia.org" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Cinzel:wght@400;500&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="src/css/tokens.css">
+<link rel="stylesheet" href="src/css/base.css">
+<link rel="stylesheet" href="src/css/chapters.css">
+</head>
+<body>
+
+<a class="skip" href="#metodo">Skip to the codex</a>
+
+<!-- ===== Chapter rail ===================================== -->
+<nav class="rail" aria-label="Chapters">
+  <span class="rail-line" aria-hidden="true"><i data-rail-progress></i></span>
+  <ol>
+    <li><a href="#incipit"  data-rail="incipit"><span class="rail-n">·</span><span class="rail-t">Incipit</span></a></li>
+    <li><a href="#metodo"   data-rail="metodo"><span class="rail-n">I</span><span class="rail-t">Il Metodo</span></a></li>
+    <li><a href="#opere"    data-rail="opere"><span class="rail-n">II</span><span class="rail-t">Le Opere</span></a></li>
+    <li><a href="#fogli"    data-rail="fogli"><span class="rail-n">III</span><span class="rail-t">I Fogli</span></a></li>
+    <li><a href="#macchine" data-rail="macchine"><span class="rail-n">IV</span><span class="rail-t">Le Macchine</span></a></li>
+    <li><a href="#dipinti"  data-rail="dipinti"><span class="rail-n">V</span><span class="rail-t">Dentro i Dipinti</span></a></li>
+    <li><a href="#specchio" data-rail="specchio"><span class="rail-n">VI</span><span class="rail-t">Lo Specchio</span></a></li>
+    <li><a href="#colophon" data-rail="colophon"><span class="rail-n">·</span><span class="rail-t">Colophon</span></a></li>
+  </ol>
+</nav>
+
+<!-- ===== Incipit ========================================== -->
+<header class="incipit" id="incipit">
+  <div class="incipit-plate" aria-hidden="true" data-hero-plate></div>
+
+  <div class="folio incipit-inner">
+    <p class="label incipit-kicker">Leonardo di ser Piero da Vinci &nbsp;·&nbsp; 1452 &ndash; 1519</p>
+
+    <h1 class="incipit-title">
+      <span class="mirror-title" data-mirror-title>
+        <span class="mirror-title-face">Saper Vedere</span>
+        <span class="mirror-title-ghost" aria-hidden="true">Saper Vedere</span>
+      </span>
+    </h1>
+
+    <p class="incipit-gloss">
+      <em>Knowing how to see.</em> His phrase for the discipline underneath
+      every art and every science he touched.
+    </p>
+
+    <p class="incipit-lede">
+      He wrote from right to left, in mirror image, across some seven thousand
+      surviving sheets. What follows is a codex in six chapters — his method,
+      his paintings, his folios, three of his machines rebuilt so they turn,
+      two of his paintings opened so you can walk inside, and a mirror of your
+      own. The page you are reading obeys the rules set out in Chapter&nbsp;I.
+    </p>
+
+    <div class="incipit-cue">
+      <span class="label">Descend</span>
+      <span class="incipit-cue-line" aria-hidden="true"></span>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<!-- ===== I · Il Metodo ==================================== -->
+<section class="chapter chapter-metodo" id="metodo">
+  <div class="folio">
+    <div class="chapter-head">
+      <span class="numeral">Capitolo I</span>
+      <h2>Il Metodo</h2>
+      <p class="gloss">The method — and the rules of this page</p>
+      <p class="standfirst">
+        Leonardo never wrote the treatise he kept promising. What survives is a
+        method, scattered across the notebooks and recoverable from them. Below,
+        each of his principles is stated, and then stated again as the rule it
+        imposed on the document you are reading. This chapter is the
+        specification for its own presentation.
+      </p>
+    </div>
+
+    <ol class="principles" data-principles></ol>
+  </div>
+</section>
+
+<!-- ===== II · Le Opere ==================================== -->
+<section class="chapter chapter-opere" id="opere">
+  <div class="folio">
+    <div class="chapter-head">
+      <span class="numeral">Capitolo II</span>
+      <h2>Le Opere</h2>
+      <p class="gloss">Fewer than twenty paintings, and half of them unfinished</p>
+      <p class="standfirst">
+        He completed almost nothing. The accepted corpus runs to about fifteen
+        panels depending on who is counting, several abandoned mid-work, and it
+        was still enough to reorganise European painting. Take the lens to any
+        plate. Open the annotations only after you have looked.
+      </p>
+    </div>
+
+    <div class="opere-stage" data-opere>
+      <div class="opere-viewer">
+        <div class="plate-frame" data-plate-frame>
+          <div class="plate-box" data-plate-box>
+            <img class="plate-img" data-plate-img alt="" decoding="async">
+            <canvas class="plate-overlay" data-plate-overlay aria-hidden="true"></canvas>
+            <div class="plate-spots" data-plate-spots></div>
+          </div>
+          <div class="plate-lens" data-plate-lens aria-hidden="true"></div>
+          <p class="plate-loading" data-plate-loading>Unrolling the plate…</p>
+        </div>
+
+        <div class="plate-tools btn-row">
+          <button class="btn" type="button" data-tool="lens" aria-pressed="false">Lens</button>
+          <button class="btn" type="button" data-tool="phi" aria-pressed="false">Golden section</button>
+          <button class="btn" type="button" data-tool="spots" aria-pressed="false">Annotations</button>
+          <span class="plate-hint" data-plate-hint>Hold the lens over the surface to magnify it</span>
+        </div>
+      </div>
+
+      <aside class="opere-apparatus">
+        <div class="work-meta" data-work-meta></div>
+        <div class="work-note" data-work-note></div>
+        <div class="spot-readout" data-spot-readout hidden></div>
+      </aside>
+    </div>
+
+    <ol class="opere-index" data-opere-index aria-label="The paintings"></ol>
+  </div>
+</section>
+
+<!-- ===== III · I Fogli ==================================== -->
+<section class="chapter chapter-fogli" id="fogli">
+  <div class="folio">
+    <div class="chapter-head">
+      <span class="numeral">Capitolo III</span>
+      <h2>I Fogli</h2>
+      <p class="gloss">The sheets</p>
+      <p class="standfirst">
+        Roughly seven thousand pages survive, perhaps a quarter of what he made.
+        They are not organised. Anatomy shares a sheet with a shopping list; a
+        siege engine shares one with a riddle. Below they are sorted into the
+        five preoccupations he kept returning to, which is a convenience he
+        never granted himself.
+      </p>
+    </div>
+
+    <div class="folios" data-folios></div>
+  </div>
+</section>
+
+<!-- ===== IV · Le Macchine Vive ============================ -->
+<section class="chapter chapter-macchine" id="macchine">
+  <div class="folio">
+    <div class="chapter-head">
+      <span class="numeral">Capitolo IV</span>
+      <h2>Le Macchine Vive</h2>
+      <p class="gloss">The machines, set in motion</p>
+      <p class="standfirst">
+        Three devices, rebuilt from the drawings as line models you can turn
+        over in your hands. They are shown as he would have shown them —
+        construction lines rather than surfaces — because in every case the
+        interesting thing is the linkage, and in two of the three cases the
+        interesting thing is also why it could never have worked.
+      </p>
+    </div>
+
+    <div class="machines" data-machines></div>
+  </div>
+</section>
+
+<!-- ===== V · Dentro i Dipinti ============================= -->
+<section class="chapter chapter-dipinti" id="dipinti">
+  <div class="folio">
+    <div class="chapter-head">
+      <span class="numeral">Capitolo V</span>
+      <h2>Dentro i Dipinti</h2>
+      <p class="gloss">Inside the paintings</p>
+      <p class="standfirst">
+        A painting in one-point perspective is a set of instructions for
+        rebuilding a room. Here two of them are carried out. The refectory of
+        the Last Supper is reconstructed from its own orthogonals and made
+        walkable; the Mona Lisa is pulled apart into the depth planes it was
+        assembled from. Both scenes stay asleep until you enter them.
+      </p>
+    </div>
+
+    <div class="enterables">
+      <article class="enterable" data-scene="cenacolo">
+        <div class="enterable-stage" data-scene-stage>
+          <div class="enterable-cover" data-scene-cover>
+            <img data-scene-cover-img alt="" decoding="async" loading="lazy">
+            <div class="enterable-cover-veil"></div>
+            <button class="enter-btn" type="button" data-scene-enter>
+              <span class="enter-btn-label">Enter the refectory</span>
+              <span class="enter-btn-sub">Reconstructs the painted room · loads on demand</span>
+            </button>
+          </div>
+        </div>
+        <div class="enterable-apparatus">
+          <h3>The refectory</h3>
+          <p>
+            Santa Maria delle Grazie, Milan, 1495&ndash;98. The painted architecture
+            is not decoration: it is a continuation of the real room, calculated
+            so that the wall appears to open. Every orthogonal converges on
+            Christ's right temple.
+          </p>
+          <p class="marginalia">
+            Walk forward and the coffers close over you. Find the point where
+            the room stops distorting — that is where Leonardo stood to set it out.
+          </p>
+          <div class="btn-row" data-scene-controls hidden></div>
+        </div>
+      </article>
+
+      <article class="enterable" data-scene="gioconda">
+        <div class="enterable-stage" data-scene-stage>
+          <div class="enterable-cover" data-scene-cover>
+            <img data-scene-cover-img alt="" decoding="async" loading="lazy">
+            <div class="enterable-cover-veil"></div>
+            <button class="enter-btn" type="button" data-scene-enter>
+              <span class="enter-btn-label">Enter the sfumato</span>
+              <span class="enter-btn-sub">Separates the picture into depth planes</span>
+            </button>
+          </div>
+        </div>
+        <div class="enterable-apparatus">
+          <h3>The depth of a face</h3>
+          <p>
+            The picture is built in receding planes: the parapet and its lost
+            columns, the sitter, the middle ground of road and bridge, the
+            impossible blue mountains, and the haze between them all. Separated,
+            the construction becomes obvious.
+          </p>
+          <p class="marginalia">
+            The haze is the point. He worked out that air is not transparent, and
+            then painted the air.
+          </p>
+          <div class="btn-row" data-scene-controls hidden></div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ===== VI · Lo Specchio ================================= -->
+<section class="chapter chapter-specchio" id="specchio">
+  <div class="folio">
+    <div class="chapter-head">
+      <span class="numeral">Capitolo VI</span>
+      <h2>Lo Specchio</h2>
+      <p class="gloss">The mirror</p>
+      <p class="standfirst">
+        He wrote right to left, letters reversed, so that his notebooks read
+        correctly only in a mirror. The romantic explanation is secrecy. The
+        likelier one is that he was left-handed, and writing backwards keeps the
+        hand out of the wet ink. Write something below and watch it go over.
+      </p>
+    </div>
+
+    <div class="specchio" data-specchio></div>
+  </div>
+</section>
+
+</main>
+
+<!-- ===== Colophon ========================================= -->
+<footer class="chapter colophon" id="colophon">
+  <div class="folio">
+    <div class="chapter-head">
+      <span class="numeral">Colophon</span>
+      <h2>Fonti</h2>
+      <p class="gloss">Sources, and what this document gets wrong on purpose</p>
+    </div>
+    <div class="recto-verso">
+      <div>
+        <ol class="sources" data-sources></ol>
+      </div>
+      <div>
+        <p class="label">Declared departures</p>
+        <ul class="caveats" data-caveats></ul>
+        <hr class="rule">
+        <p class="marginalia colophon-sig">
+          Set in Cormorant Garamond, EB Garamond and Cinzel. Measured on
+          &phi;&nbsp;=&nbsp;1.618. Plates from Wikimedia Commons, all public
+          domain. Machines and rooms modelled procedurally — no external
+          geometry was loaded to build them.
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.170.0/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.170.0/examples/jsm/"
+  }
+}
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+<script type="module" src="src/js/main.js"></script>
+
+</body>
+</html>

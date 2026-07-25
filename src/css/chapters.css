@@ -1,0 +1,781 @@
+/* ============================================================
+   Chapters
+   The codex darkens as you descend: light parchment at the
+   incipit, the workshop at night for the machines and the
+   enterable paintings, then back up into daylight for the mirror.
+   ============================================================ */
+
+.chapter-metodo   { --bg: #ece1c9; }
+.chapter-opere    { --bg: #e6dabf; }
+.chapter-fogli    { --bg: #dfd1b1; }
+.chapter-macchine { --bg: #241b12; }
+.chapter-dipinti  { --bg: #191309; }
+.chapter-specchio { --bg: #e3d6ba; }
+.colophon         { --bg: #d6c5a1; }
+
+.chapter { background: var(--bg); }
+.chapter + .chapter::before { background: linear-gradient(to bottom, transparent, var(--bg)); }
+
+/* Dark leaves: the ink and the ground exchange places. */
+.chapter-macchine, .chapter-dipinti {
+  --ink: #e8dcc2;
+  --ink-soft: #cbbb9a;
+  --ink-faded: #9b8a69;
+  --ink-ghost: #7d6e52;
+  --hairline: rgb(232 220 194 / 0.18);
+  --hairline-soft: rgb(232 220 194 / 0.09);
+  color: var(--ink);
+}
+.chapter-macchine .chapter-head h2,
+.chapter-dipinti .chapter-head h2 { color: #f0e6cf; }
+
+/* The fixed paper texture must not sit on top of the dark leaves */
+.chapter-macchine, .chapter-dipinti { isolation: isolate; }
+
+/* ---- Skip link --------------------------------------------------- */
+.skip {
+  position: fixed; top: var(--s-3); left: var(--s-3); z-index: 200;
+  transform: translateY(-300%);
+  background: var(--parchment-lit); color: var(--ink);
+  padding: var(--s-2) var(--s-4); border: 1px solid var(--hairline);
+  font-family: var(--type-label); font-size: var(--t-xs); letter-spacing: 0.2em;
+  text-transform: uppercase; text-decoration: none;
+  transition: transform var(--dur-fast) var(--ease-sfumato);
+}
+.skip:focus { transform: none; }
+
+/* ---- Chapter rail ------------------------------------------------ */
+
+.rail {
+  position: fixed;
+  top: 50%;
+  right: var(--s-4);
+  transform: translateY(-50%);
+  z-index: 90;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--dur) var(--ease-sfumato);
+}
+.rail.is-visible { opacity: 1; }
+.rail ol { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-2); }
+.rail a {
+  pointer-events: auto;
+  display: flex; align-items: center; justify-content: flex-end; gap: var(--s-3);
+  text-decoration: none;
+  padding: 2px 0;
+  color: var(--ink-ghost);
+  transition: color var(--dur-fast) var(--ease-sfumato);
+}
+.rail-n {
+  font-family: var(--type-label);
+  font-size: 0.6rem; letter-spacing: 0.1em;
+  min-width: 2.2em; text-align: right;
+  opacity: 0.75;
+}
+.rail-t {
+  font-family: var(--type-label);
+  font-size: 0.58rem; letter-spacing: 0.22em; text-transform: uppercase;
+  max-width: 0; overflow: hidden; white-space: nowrap;
+  opacity: 0;
+  transition: max-width var(--dur) var(--ease-sfumato), opacity var(--dur) var(--ease-sfumato);
+}
+.rail:hover .rail-t, .rail a:focus-visible .rail-t { max-width: 12rem; opacity: 1; }
+.rail a:hover { color: var(--sanguine); }
+.rail a.is-current { color: var(--sanguine); }
+.rail a.is-current .rail-n { opacity: 1; }
+.rail a.is-current .rail-t { max-width: 12rem; opacity: 1; }
+
+.rail-line {
+  position: absolute; right: -0.5rem; top: 0; bottom: 0; width: 1px;
+  background: var(--hairline-soft);
+}
+.rail-line i {
+  position: absolute; inset-inline: 0; top: 0; height: 0;
+  background: var(--sanguine); display: block;
+}
+@media (max-width: 68rem) { .rail { display: none; } }
+
+/* ---- Incipit ------------------------------------------------------ */
+
+.incipit {
+  position: relative;
+  min-height: 100svh;
+  display: grid;
+  align-items: center;
+  padding-block: var(--s-8);
+  background: #f2ead8;
+  overflow: hidden;
+}
+.incipit-inner { position: relative; z-index: 2; max-width: 46rem; }
+
+/* A ghost of the Vitruvian sheet, bled almost to nothing */
+.incipit-plate {
+  position: absolute;
+  z-index: 1;
+  right: -6%;
+  top: 50%;
+  translate: 0 -50%;
+  width: min(56vw, 40rem);
+  aspect-ratio: 2258 / 3070;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  opacity: 0.14;
+  mix-blend-mode: multiply;
+  filter: sepia(0.5) contrast(1.05);
+  pointer-events: none;
+  mask-image: radial-gradient(closest-side, #000 42%, transparent 88%);
+}
+@media (max-width: 62rem) { .incipit-plate { right: -20%; opacity: 0.09; } }
+
+.incipit-kicker { margin: 0 0 var(--s-5); }
+
+.incipit-title { margin: 0; }
+
+/* The title is written the way he wrote, then turned over.
+   The reversed ghost stays behind it like ink showing through. */
+.mirror-title {
+  position: relative;
+  display: inline-block;
+  font-size: clamp(3rem, 13vw, var(--t-4xl));
+  line-height: 0.92;
+  font-weight: 300;
+  font-style: italic;
+  letter-spacing: -0.02em;
+}
+.mirror-title-face { position: relative; z-index: 2; display: block; color: var(--ink); }
+.mirror-title-ghost {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: block;
+  color: var(--sanguine);
+  opacity: 0.34;
+  transform: scaleX(-1);
+  transform-origin: 50% 50%;
+  filter: blur(0.4px);
+  pointer-events: none;
+}
+/* Before the reveal runs, the title itself is still reversed. */
+.mirror-title[data-state="reversed"] .mirror-title-face { transform: scaleX(-1); }
+.mirror-title[data-state="reversed"] .mirror-title-ghost { opacity: 0; }
+.mirror-title-face, .mirror-title-ghost {
+  transition: transform var(--dur-slow) var(--ease-breath),
+              opacity var(--dur-slow) var(--ease-breath);
+}
+
+.incipit-gloss {
+  margin-top: var(--s-4);
+  font-family: var(--type-display);
+  font-size: var(--t-lg);
+  line-height: 1.32;
+  color: var(--ink-soft);
+  max-width: 30rem;
+}
+.incipit-lede {
+  margin-top: var(--s-5);
+  max-width: 34rem;
+  font-size: var(--t-base);
+  line-height: 1.62;
+  color: var(--ink-soft);
+}
+
+.incipit-cue { display: flex; align-items: center; gap: var(--s-3); margin-top: var(--s-6); }
+.incipit-cue-line {
+  display: block; width: var(--s-7); height: 1px;
+  background: linear-gradient(to right, var(--hairline), transparent);
+  position: relative; overflow: hidden;
+}
+.incipit-cue-line::after {
+  content: ""; position: absolute; inset-block: 0; left: -30%; width: 30%;
+  background: var(--sanguine);
+  animation: cue 3.4s var(--ease-breath) infinite;
+}
+@keyframes cue { 0% { left: -30%; } 60%, 100% { left: 120%; } }
+
+/* ---- I · Principles ----------------------------------------------- */
+
+.principles { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-6); counter-reset: p; }
+
+.principle {
+  display: grid;
+  grid-template-columns: 4.5rem minmax(0, 1.618fr) minmax(0, 1fr);
+  gap: var(--s-5);
+  align-items: start;
+  padding-block: var(--s-5);
+  position: relative;
+}
+.principle + .principle::before {
+  content: ""; position: absolute; top: 0; inset-inline: 0; height: 1px;
+  background: linear-gradient(to right, transparent, var(--hairline) 8%, var(--hairline) 70%, transparent);
+}
+@media (max-width: 62rem) {
+  .principle { grid-template-columns: 3rem minmax(0, 1fr); }
+  .principle .principle-rule { grid-column: 2; }
+}
+
+.principle-n {
+  font-family: var(--type-label);
+  font-size: var(--t-md);
+  color: var(--gold);
+  line-height: 1;
+  padding-top: 0.1em;
+  text-transform: lowercase;
+  font-variant: small-caps;
+}
+.principle-it {
+  font-family: var(--type-display);
+  font-style: italic;
+  font-size: var(--t-xl);
+  line-height: 1.05;
+  margin: 0;
+}
+.principle-en {
+  font-family: var(--type-label);
+  font-size: var(--t-xs);
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--ink-ghost);
+  margin: var(--s-2) 0 var(--s-3);
+}
+.principle-source { margin: 0; color: var(--ink-soft); }
+
+.principle-rule {
+  position: relative;
+  padding-left: var(--s-4);
+  border-left: 1px solid rgb(164 68 47 / 0.28);
+}
+.principle-rule .label { color: var(--sanguine); display: block; margin-bottom: var(--s-2); }
+.principle-rule p { margin: 0; font-size: var(--t-sm); line-height: 1.62; color: var(--ink-soft); }
+
+/* ---- II · The plates ----------------------------------------------- */
+
+.opere-stage {
+  display: grid;
+  grid-template-columns: minmax(0, 1.618fr) minmax(0, 1fr);
+  gap: var(--s-6);
+  align-items: start;
+}
+@media (max-width: 68rem) { .opere-stage { grid-template-columns: 1fr; } }
+
+.plate-frame {
+  position: relative;
+  overflow: hidden;
+  background: #cdbb98;
+  box-shadow: var(--veil-3), 0 0 0 1px rgb(35 25 15 / 0.1);
+  min-height: 18rem;
+  display: grid;
+  place-items: center;
+  cursor: crosshair;
+}
+/* The box shrink-wraps the plate so that the overlay and the
+   hotspots share its exact coordinate space — no letterbox maths. */
+.plate-box { position: relative; line-height: 0; max-width: 100%; }
+
+.plate-img {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 74svh;
+  opacity: 0;
+  transition: opacity var(--dur-slow) var(--ease-sfumato);
+}
+.plate-img.is-in { opacity: 1; }
+
+.plate-overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--dur) var(--ease-sfumato);
+}
+.plate-overlay.is-on { opacity: 1; }
+
+.plate-loading {
+  position: absolute;
+  margin: 0;
+  font-family: var(--type-label);
+  font-size: var(--t-xs);
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: rgb(35 25 15 / 0.45);
+}
+.plate-loading[hidden] { display: none; }
+
+/* The lens: a ground-glass disc that magnifies the plate beneath it */
+.plate-lens {
+  position: absolute;
+  width: 15rem; height: 15rem;
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.86);
+  transition: opacity var(--dur-fast) var(--ease-sfumato), transform var(--dur-fast) var(--ease-sfumato);
+  background-repeat: no-repeat;
+  box-shadow:
+    0 0 0 1px rgb(35 25 15 / 0.35),
+    0 0 0 7px rgb(176 138 62 / 0.18),
+    0 var(--s-3) var(--s-6) -10px rgb(20 14 8 / 0.6),
+    inset 0 0 var(--s-5) rgb(255 250 235 / 0.28);
+}
+.plate-lens.is-on { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+@media (max-width: 48rem) { .plate-lens { width: 10rem; height: 10rem; } }
+
+/* Annotation hotspots */
+.plate-spots { position: absolute; inset: 0; pointer-events: none; opacity: 0; transition: opacity var(--dur) var(--ease-sfumato); }
+.plate-spots.is-on { opacity: 1; pointer-events: none; }
+.plate-spots.is-on .spot { pointer-events: auto; }
+
+.spot {
+  position: absolute;
+  width: 1.55rem; height: 1.55rem;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  border: 1px solid rgb(164 68 47 / 0.9);
+  background: rgb(246 239 223 / 0.14);
+  backdrop-filter: blur(1px);
+  cursor: pointer;
+  padding: 0;
+  display: grid; place-items: center;
+  transition: background var(--dur-fast) var(--ease-sfumato),
+              box-shadow var(--dur-fast) var(--ease-sfumato),
+              transform var(--dur-fast) var(--ease-sfumato);
+}
+.spot::after {
+  content: "";
+  width: 3px; height: 3px; border-radius: 50%;
+  background: var(--sanguine);
+}
+.spot::before {
+  content: "";
+  position: absolute; inset: -0.45rem;
+  border-radius: 50%;
+  border: 1px solid rgb(164 68 47 / 0.35);
+  opacity: 0;
+  transition: opacity var(--dur) var(--ease-sfumato);
+}
+.spot:hover, .spot.is-active {
+  background: rgb(164 68 47 / 0.24);
+  transform: translate(-50%, -50%) scale(1.12);
+}
+.spot:hover::before, .spot.is-active::before { opacity: 1; }
+
+.plate-tools { margin-top: var(--s-3); }
+.plate-hint {
+  font-family: var(--type-label);
+  font-size: 0.56rem; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--ink-ghost);
+  margin-left: auto;
+}
+@media (max-width: 48rem) { .plate-hint { display: none; } }
+
+/* Apparatus column */
+.opere-apparatus { position: sticky; top: var(--s-5); display: grid; gap: var(--s-4); }
+@media (max-width: 68rem) { .opere-apparatus { position: static; } }
+
+.work-meta h3 {
+  font-size: var(--t-xl);
+  font-style: italic;
+  line-height: 1.04;
+}
+.work-meta .work-sub {
+  font-family: var(--type-display);
+  font-size: var(--t-md);
+  color: var(--ink-faded);
+  font-style: italic;
+  margin-top: 0.1em;
+}
+.work-facts {
+  margin: var(--s-4) 0 0;
+  display: grid;
+  gap: 0.35rem;
+  font-size: var(--t-sm);
+  color: var(--ink-soft);
+}
+.work-facts div { display: grid; grid-template-columns: 6.2rem 1fr; gap: var(--s-3); }
+.work-facts dt {
+  font-family: var(--type-label); font-size: 0.56rem; letter-spacing: 0.18em;
+  text-transform: uppercase; color: var(--ink-ghost); padding-top: 0.32em;
+}
+.work-facts dd { margin: 0; }
+
+.work-note p { font-size: var(--t-sm); line-height: 1.64; color: var(--ink-soft); }
+.work-note .seeing {
+  border-left: 1px solid rgb(176 138 62 / 0.5);
+  padding-left: var(--s-4);
+  font-family: var(--type-display);
+  font-size: var(--t-md);
+  font-style: italic;
+  line-height: 1.44;
+  color: var(--ink);
+}
+
+.spot-readout {
+  background: linear-gradient(to bottom, rgb(255 250 236 / 0.5), rgb(201 182 145 / 0.22));
+  border: 1px solid var(--hairline);
+  padding: var(--s-4);
+  box-shadow: var(--veil-1);
+}
+.spot-readout h4 {
+  font-family: var(--type-display); font-style: italic; font-size: var(--t-md);
+  margin-bottom: var(--s-2);
+}
+.spot-readout p { margin: 0; font-size: var(--t-sm); line-height: 1.6; color: var(--ink-soft); }
+
+/* The index of plates */
+.opere-index {
+  list-style: none; margin: var(--s-6) 0 0; padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(6.2rem, 1fr));
+  gap: var(--s-3);
+}
+.opere-index button {
+  display: block; width: 100%; padding: 0; border: 0; cursor: pointer;
+  background: none;
+  filter: saturate(0.72) contrast(0.94);
+  opacity: 0.6;
+  transition: opacity var(--dur-fast) var(--ease-sfumato),
+              filter var(--dur-fast) var(--ease-sfumato),
+              transform var(--dur-fast) var(--ease-sfumato);
+}
+.opere-index button:hover { opacity: 0.92; filter: none; transform: translateY(-2px); }
+.opere-index button.is-current { opacity: 1; filter: none; }
+.opere-index img {
+  display: block; width: 100%; aspect-ratio: 1; object-fit: cover;
+  box-shadow: var(--veil-2);
+}
+.opere-index button.is-current img { box-shadow: var(--veil-2), 0 0 0 1px var(--sanguine); }
+.opere-index .idx-t {
+  display: block; margin-top: var(--s-2);
+  font-family: var(--type-label); font-size: 0.52rem; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--ink-ghost); text-align: left;
+  line-height: 1.35;
+}
+
+/* ---- III · Folios --------------------------------------------------- */
+
+.folios { display: grid; gap: var(--s-7); }
+
+.folio-group-head { margin-bottom: var(--s-5); max-width: 40rem; }
+.folio-group-head h3 {
+  font-family: var(--type-display); font-style: italic; font-size: var(--t-xl);
+}
+.folio-group-head .en {
+  font-family: var(--type-label); font-size: var(--t-xs); letter-spacing: 0.28em;
+  text-transform: uppercase; color: var(--gold); margin: var(--s-2) 0 var(--s-3);
+}
+.folio-group-head p { margin: 0; color: var(--ink-soft); font-size: var(--t-sm); line-height: 1.64; }
+
+.sheets {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  gap: var(--s-5);
+}
+
+.sheet { display: grid; gap: var(--s-3); align-content: start; }
+.sheet-plate {
+  position: relative;
+  background: #d8c7a3;
+  box-shadow: var(--veil-2);
+  overflow: hidden;
+  /* the blueprint treatment: bleach the paper, keep the iron-gall */
+  filter: sepia(0.34) contrast(1.06);
+  transition: filter var(--dur) var(--ease-sfumato), box-shadow var(--dur) var(--ease-sfumato);
+}
+.sheet:hover .sheet-plate { filter: sepia(0.1) contrast(1.02); box-shadow: var(--veil-3); }
+.sheet-plate img {
+  display: block; width: 100%; height: auto;
+  aspect-ratio: 3 / 4; object-fit: cover; object-position: center top;
+  mix-blend-mode: multiply;
+}
+.sheet-plate::after {
+  content: "";
+  position: absolute; inset: 0;
+  background: radial-gradient(120% 90% at 50% 30%, transparent 52%, rgb(90 66 36 / 0.3));
+  pointer-events: none;
+}
+.sheet h4 { font-family: var(--type-display); font-style: italic; font-size: var(--t-md); }
+.sheet .ref {
+  font-family: var(--type-label); font-size: 0.54rem; letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--ink-ghost); margin: 0.35rem 0 0.55rem;
+  line-height: 1.5;
+}
+.sheet p.d { margin: 0; font-size: var(--t-sm); line-height: 1.6; color: var(--ink-soft); }
+
+/* ---- IV · Machines --------------------------------------------------- */
+
+.machines { display: grid; gap: var(--s-7); }
+
+.machine {
+  display: grid;
+  grid-template-columns: minmax(0, 1.618fr) minmax(0, 1fr);
+  gap: var(--s-6);
+  align-items: start;
+}
+.machine:nth-child(even) { grid-template-columns: minmax(0, 1fr) minmax(0, 1.618fr); }
+.machine:nth-child(even) .machine-stage { order: 2; }
+@media (max-width: 68rem) {
+  .machine, .machine:nth-child(even) { grid-template-columns: 1fr; }
+  .machine:nth-child(even) .machine-stage { order: 0; }
+}
+
+.machine-stage {
+  position: relative;
+  aspect-ratio: 1.618;
+  background:
+    radial-gradient(120% 100% at 50% 0%, #33271a, #191207 72%);
+  box-shadow: inset 0 0 0 1px rgb(232 220 194 / 0.12), var(--veil-3);
+  overflow: hidden;
+  cursor: grab;
+  touch-action: pan-y;
+}
+.machine-stage:active { cursor: grabbing; }
+/* between the ruled field (z 0) and the vignette (z 3) */
+.machine-stage canvas { display: block; width: 100%; height: 100%; position: relative; z-index: 1; }
+
+/* Ruled blueprint field behind the model */
+.machine-stage::before {
+  content: "";
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background-image:
+    linear-gradient(rgb(212 180 99 / 0.075) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(212 180 99 / 0.075) 1px, transparent 1px);
+  background-size: 34px 34px, 34px 34px;
+  mask-image: radial-gradient(closest-side, #000 30%, transparent 92%);
+}
+.machine-stage::after {
+  content: "";
+  position: absolute; inset: 0; z-index: 3; pointer-events: none;
+  background: radial-gradient(110% 90% at 50% 45%, transparent 46%, rgb(10 7 3 / 0.72));
+}
+
+.machine-caption {
+  position: absolute; z-index: 4; left: var(--s-4); bottom: var(--s-3);
+  font-family: var(--type-label); font-size: 0.54rem; letter-spacing: 0.2em;
+  text-transform: uppercase; color: rgb(212 180 99 / 0.75);
+  pointer-events: none;
+}
+.machine-idle {
+  position: absolute; z-index: 5; inset: 0;
+  display: grid; place-items: center;
+  background: rgb(15 11 5 / 0.55);
+  font-family: var(--type-label); font-size: var(--t-xs); letter-spacing: 0.26em;
+  text-transform: uppercase; color: rgb(212 180 99 / 0.8);
+  transition: opacity var(--dur) var(--ease-sfumato);
+}
+.machine-idle[hidden] { display: none; }
+
+.machine-apparatus h3 {
+  font-family: var(--type-display); font-style: italic; font-size: var(--t-xl);
+  color: #f0e6cf;
+}
+.machine-apparatus .ref {
+  font-family: var(--type-label); font-size: 0.54rem; letter-spacing: 0.18em;
+  text-transform: uppercase; color: var(--gold); margin: var(--s-2) 0 var(--s-4);
+}
+.machine-apparatus p { font-size: var(--t-sm); line-height: 1.66; color: var(--ink-soft); }
+.machine-apparatus .verdict {
+  border-left: 1px solid rgb(164 68 47 / 0.55);
+  padding-left: var(--s-4);
+  font-family: var(--type-display); font-style: italic; font-size: var(--t-md);
+  line-height: 1.46; color: #e8dcc2;
+  margin-top: var(--s-4);
+}
+.machine-apparatus .btn { color: var(--ink-soft); background: linear-gradient(to bottom, rgb(232 220 194 / 0.1), rgb(232 220 194 / 0.03)); }
+.machine-apparatus .btn:hover { color: #f4ecd8; background: linear-gradient(to bottom, rgb(232 220 194 / 0.18), rgb(232 220 194 / 0.06)); }
+.machine-apparatus .btn[aria-pressed="true"] { color: #1b1409; background: linear-gradient(to bottom, var(--gold-lit), var(--gold)); border-color: rgb(212 180 99 / 0.6); }
+
+.machine-thumb { margin-top: var(--s-4); }
+.machine-thumb img {
+  display: block; width: 100%; max-width: 12rem; height: auto;
+  filter: invert(1) sepia(0.6) hue-rotate(2deg) saturate(0.7) contrast(0.9);
+  opacity: 0.5;
+  mix-blend-mode: screen;
+}
+.machine-thumb figcaption {
+  font-family: var(--type-label); font-size: 0.5rem; letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--ink-ghost); margin-top: var(--s-2);
+}
+
+/* ---- V · Enterable paintings ----------------------------------------- */
+
+.enterables { display: grid; gap: var(--s-7); }
+
+.enterable {
+  display: grid;
+  grid-template-columns: minmax(0, 1.618fr) minmax(0, 1fr);
+  gap: var(--s-6);
+  align-items: start;
+}
+@media (max-width: 68rem) { .enterable { grid-template-columns: 1fr; } }
+
+.enterable-stage {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  background: #0d0905;
+  box-shadow: var(--veil-3), inset 0 0 0 1px rgb(232 220 194 / 0.1);
+  overflow: hidden;
+}
+.enterable-stage canvas { display: block; width: 100%; height: 100%; }
+
+.enterable-cover { position: absolute; inset: 0; display: grid; place-items: center; z-index: 4; }
+.enterable-cover img {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover;
+  filter: saturate(0.7) brightness(0.62);
+}
+.enterable-cover-veil {
+  position: absolute; inset: 0;
+  background: radial-gradient(90% 80% at 50% 50%, rgb(10 7 3 / 0.34), rgb(10 7 3 / 0.86));
+}
+.enterable-cover.is-gone { opacity: 0; pointer-events: none; transition: opacity var(--dur-slow) var(--ease-sfumato); }
+
+.enter-btn {
+  position: relative; z-index: 2;
+  display: grid; gap: var(--s-2); justify-items: center;
+  padding: var(--s-4) var(--s-6);
+  background: rgb(20 14 7 / 0.5);
+  border: 1px solid rgb(212 180 99 / 0.45);
+  cursor: pointer;
+  backdrop-filter: blur(2px);
+  transition: background var(--dur) var(--ease-sfumato), border-color var(--dur) var(--ease-sfumato);
+}
+.enter-btn:hover { background: rgb(40 28 13 / 0.62); border-color: rgb(212 180 99 / 0.8); }
+.enter-btn-label {
+  font-family: var(--type-display); font-style: italic; font-size: var(--t-lg);
+  color: #f2e8d0; line-height: 1;
+}
+.enter-btn-sub {
+  font-family: var(--type-label); font-size: 0.52rem; letter-spacing: 0.2em;
+  text-transform: uppercase; color: rgb(212 180 99 / 0.75);
+}
+
+.enterable-apparatus h3 {
+  font-family: var(--type-display); font-style: italic; font-size: var(--t-xl);
+  color: #f0e6cf; margin-bottom: var(--s-3);
+}
+.enterable-apparatus p { font-size: var(--t-sm); line-height: 1.66; color: var(--ink-soft); }
+.enterable-apparatus .marginalia { color: var(--ink-ghost); max-width: none; }
+.enterable-apparatus .btn { color: var(--ink-soft); background: linear-gradient(to bottom, rgb(232 220 194 / 0.1), rgb(232 220 194 / 0.03)); }
+.enterable-apparatus .btn:hover { color: #f4ecd8; }
+.enterable-apparatus .btn[aria-pressed="true"] { color: #1b1409; background: linear-gradient(to bottom, var(--gold-lit), var(--gold)); }
+
+.scene-range {
+  display: inline-flex; align-items: center; gap: var(--s-3);
+  font-family: var(--type-label); font-size: 0.54rem; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--ink-faded);
+}
+.scene-range input[type="range"] {
+  -webkit-appearance: none; appearance: none;
+  width: 8.5rem; height: 1px; background: var(--hairline); cursor: pointer;
+}
+.scene-range input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 0.75rem; height: 0.75rem; border-radius: 50%;
+  background: var(--gold-lit); border: 1px solid rgb(20 14 7 / 0.5);
+}
+.scene-range input[type="range"]::-moz-range-thumb {
+  width: 0.75rem; height: 0.75rem; border-radius: 50%; border: 1px solid rgb(20 14 7 / 0.5);
+  background: var(--gold-lit);
+}
+
+.scene-readout {
+  position: absolute; z-index: 5; left: var(--s-4); bottom: var(--s-3);
+  font-family: var(--type-label); font-size: 0.54rem; letter-spacing: 0.18em;
+  text-transform: uppercase; color: rgb(212 180 99 / 0.7);
+  pointer-events: none;
+}
+
+/* ---- VI · The mirror -------------------------------------------------- */
+
+.specchio {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--s-6);
+  align-items: start;
+}
+@media (max-width: 62rem) { .specchio { grid-template-columns: 1fr; } }
+
+.specchio-write, .specchio-read { display: grid; gap: var(--s-3); }
+
+.specchio-field {
+  width: 100%;
+  min-height: 11rem;
+  resize: vertical;
+  font-family: var(--type-display);
+  font-size: var(--t-lg);
+  line-height: 1.5;
+  color: var(--ink);
+  background:
+    repeating-linear-gradient(to bottom, transparent 0, transparent calc(1.5em - 1px), rgb(35 25 15 / 0.09) calc(1.5em - 1px), rgb(35 25 15 / 0.09) 1.5em),
+    linear-gradient(to bottom, rgb(255 250 236 / 0.5), rgb(201 182 145 / 0.2));
+  border: 1px solid var(--hairline);
+  padding: var(--s-3) var(--s-4);
+  box-shadow: var(--veil-1);
+}
+.specchio-field::placeholder { color: var(--ink-ghost); font-style: italic; }
+
+.specchio-glass {
+  min-height: 11rem;
+  padding: var(--s-3) var(--s-4);
+  font-family: var(--type-display);
+  font-size: var(--t-lg);
+  line-height: 1.5;
+  /* One flip only: scaleX reverses the glyphs; direction stays LTR so
+     line wrapping still matches the ordinary panel. A real mirror held
+     to the screen undoes the transform and the text becomes legible. */
+  transform: scaleX(-1);
+  color: var(--ink-soft);
+  background:
+    repeating-linear-gradient(to bottom, transparent 0, transparent calc(1.5em - 1px), rgb(35 25 15 / 0.09) calc(1.5em - 1px), rgb(35 25 15 / 0.09) 1.5em),
+    linear-gradient(150deg, rgb(215 226 228 / 0.5), rgb(201 182 145 / 0.22));
+  border: 1px solid var(--hairline);
+  box-shadow: inset 0 1px var(--s-5) rgb(125 151 163 / 0.24);
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  transition: opacity var(--dur-fast) var(--ease-breath);
+}
+
+.specchio-samples { display: flex; flex-wrap: wrap; gap: var(--s-2); margin-top: var(--s-2); }
+.specchio-samples .btn {
+  text-transform: none;
+  letter-spacing: 0.08em;
+  font-family: var(--type-display);
+  font-style: italic;
+  font-size: var(--t-sm);
+}
+.specchio-samples .btn.is-active {
+  background: var(--ink);
+  color: var(--parchment);
+  border-color: var(--ink);
+}
+
+.specchio-legend {
+  font-family: var(--type-label); font-size: 0.54rem; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--ink-ghost);
+}
+.specchio-hand { display: flex; gap: var(--s-2); align-items: center; }
+
+/* ---- Colophon --------------------------------------------------------- */
+
+.sources { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-4); counter-reset: s; }
+.sources li { padding-left: var(--s-5); position: relative; }
+.sources li::before {
+  counter-increment: s; content: counter(s, decimal-leading-zero);
+  position: absolute; left: 0; top: 0.24em;
+  font-family: var(--type-label); font-size: 0.56rem; color: var(--gold); letter-spacing: 0.1em;
+}
+.sources h4 { font-family: var(--type-display); font-style: italic; font-size: var(--t-md); }
+.sources p { margin: 0.3rem 0 0; font-size: var(--t-sm); line-height: 1.58; color: var(--ink-soft); max-width: none; }
+
+.caveats { margin: var(--s-3) 0 0; padding: 0 0 0 var(--s-4); display: grid; gap: var(--s-3); }
+.caveats li { font-size: var(--t-sm); line-height: 1.58; color: var(--ink-soft); }
+.caveats li::marker { color: var(--sanguine); }
+
+.colophon-sig { max-width: none; }
+
+/* ---- Scroll choreography defaults ------------------------------------- */
+[data-rise] { opacity: 0; transform: translateY(var(--s-4)); }
+.no-js [data-rise], .is-risen { opacity: 1; transform: none; }

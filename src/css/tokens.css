@@ -1,0 +1,97 @@
+/* ============================================================
+   SAPER VEDERE — design tokens
+   The page obeys the rules it describes in Chapter I.
+   φ = 1.6180339887 governs measure, rhythm and type.
+   ============================================================ */
+
+:root {
+  /* ---- Proportion ------------------------------------------------
+     Every step is a power of φ. Nothing is chosen by taste alone. */
+  --phi: 1.618;
+  --phi-inv: 0.618;
+
+  /* Fibonacci spacing — the integer shadow of φ */
+  --s-1: 0.3125rem;  /*  5 */
+  --s-2: 0.5rem;     /*  8 */
+  --s-3: 0.8125rem;  /* 13 */
+  --s-4: 1.3125rem;  /* 21 */
+  --s-5: 2.125rem;   /* 34 */
+  --s-6: 3.4375rem;  /* 55 */
+  --s-7: 5.5625rem;  /* 89 */
+  --s-8: 9rem;       /* 144 */
+  --s-9: 14.5625rem; /* 233 */
+
+  /* φ-stepped type scale, from a 17px root */
+  --t-xs: 0.618rem;
+  --t-sm: 0.786rem;
+  --t-base: 1rem;
+  --t-md: 1.272rem;   /* √φ */
+  --t-lg: 1.618rem;
+  --t-xl: 2.058rem;
+  --t-2xl: 2.618rem;  /* φ² */
+  --t-3xl: 4.236rem;  /* φ³ */
+  --t-4xl: 6.854rem;  /* φ⁴ */
+
+  /* ---- Pigments --------------------------------------------------
+     Ground, ink, chalk and leaf. No pure black, no pure white:
+     Leonardo held that the extremes do not occur in nature. */
+  --parchment-lit: #f6efdf;
+  --parchment: #ece1c9;
+  --parchment-deep: #ddceae;
+  --parchment-shade: #c9b691;
+
+  --ink: #23190f;          /* iron-gall at full strength */
+  --ink-soft: #3d2f1f;     /* the same ink, thinned */
+  --ink-faded: #6b5942;    /* and thinned again, as it oxidises */
+  --ink-ghost: #8a7659;    /* what remains after five centuries */
+
+  --sanguine: #a4442f;     /* red chalk */
+  --sanguine-soft: #bc6a52;
+  --gold: #b08a3e;         /* leaf */
+  --gold-lit: #d8b463;
+
+  --umber: #17110a;        /* deepest shadow */
+  --verdaccio: #6d7154;    /* the green underpainting */
+  --azurite: #7d97a3;      /* aerial perspective */
+
+  /* ---- Sfumato ---------------------------------------------------
+     "without lines or borders, in the manner of smoke."
+     Borders are a last resort; edges are dissolved. */
+  --veil-1: 0 1px 0 rgb(255 250 238 / 0.5);
+  --veil-2: 0 var(--s-2) var(--s-5) -12px rgb(35 25 15 / 0.34);
+  --veil-3: 0 var(--s-4) var(--s-7) -28px rgb(35 25 15 / 0.5);
+
+  --hairline: rgb(35 25 15 / 0.16);
+  --hairline-soft: rgb(35 25 15 / 0.08);
+
+  /* ---- Motion ----------------------------------------------------
+     "Every movement tends to the maintenance of itself."
+     Nothing starts or stops abruptly. */
+  --ease-sfumato: cubic-bezier(0.22, 0.61, 0.24, 1);
+  --ease-breath: cubic-bezier(0.45, 0, 0.15, 1);
+  --dur-fast: 260ms;
+  --dur: 620ms;
+  --dur-slow: 1240ms;
+
+  /* ---- Measure ---------------------------------------------------
+     The recto/verso column pair stands in golden section. */
+  --folio: 82rem;
+  --measure: 34rem;      /* body text never exceeds ~66 characters */
+  --rail: calc(var(--measure) * var(--phi-inv));
+
+  /* Laid-paper grain, generated rather than photographed so that the
+     document carries no binary payload of its own. */
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.86' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.38'/%3E%3C/svg%3E");
+
+  --type-display: "Cormorant Garamond", "EB Garamond", Garamond, serif;
+  --type-body: "EB Garamond", Garamond, "Times New Roman", serif;
+  --type-label: "Cinzel", "Cormorant Garamond", serif;
+  --type-hand: "Cormorant Garamond", serif;
+}
+
+/* The parchment darkens as you descend the codex; each chapter
+   sets --ground and everything else follows from it. */
+:root {
+  --ground: var(--parchment);
+  --ground-fig: var(--ink);
+}

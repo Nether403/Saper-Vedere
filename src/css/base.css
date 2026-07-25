@@ -1,0 +1,238 @@
+/* ============================================================
+   Ground, type, and the folio grid
+   ============================================================ */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  font-size: 17px;
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+@media (max-width: 60rem) { html { font-size: 16px; } }
+
+body {
+  margin: 0;
+  background: var(--parchment);
+  color: var(--ink);
+  font-family: var(--type-body);
+  font-size: var(--t-base);
+  line-height: var(--phi);
+  font-feature-settings: "kern" 1, "liga" 1, "onum" 1;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* The prepared ground: laid paper, foxing, and the warm bloom of
+   a page that has been open under lamplight for five centuries. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(120% 90% at 18% 8%, rgb(255 252 242 / 0.55), transparent 58%),
+    radial-gradient(90% 70% at 88% 92%, rgb(150 116 66 / 0.16), transparent 62%),
+    radial-gradient(60% 50% at 50% 50%, transparent 40%, rgb(84 62 34 / 0.13) 100%);
+  mix-blend-mode: multiply;
+}
+body::after {
+  content: "";
+  position: fixed;
+  inset: -20%;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.5;
+  background-image: var(--grain);
+  background-size: 260px 260px;
+  mix-blend-mode: multiply;
+}
+
+/* ---- Type ------------------------------------------------------ */
+
+h1, h2, h3, h4 {
+  font-family: var(--type-display);
+  font-weight: 300;
+  line-height: 1.06;
+  letter-spacing: -0.012em;
+  margin: 0;
+  text-wrap: balance;
+}
+
+p { margin: 0 0 var(--s-4); max-width: var(--measure); text-wrap: pretty; }
+
+a { color: inherit; text-decoration-color: var(--sanguine-soft); text-underline-offset: 0.22em; text-decoration-thickness: 1px; }
+a:hover { text-decoration-color: var(--sanguine); }
+
+em { font-style: italic; }
+
+.label {
+  font-family: var(--type-label);
+  font-size: var(--t-xs);
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: var(--ink-faded);
+  font-weight: 400;
+}
+
+.lead {
+  font-size: var(--t-md);
+  line-height: 1.5;
+  color: var(--ink-soft);
+}
+
+/* Marginalia: the running commentary in the gutter, as in the
+   notebooks, set in a lighter italic and never justified. */
+.marginalia {
+  font-family: var(--type-hand);
+  font-style: italic;
+  font-size: var(--t-sm);
+  line-height: 1.5;
+  color: var(--ink-faded);
+  max-width: 21ch;
+}
+
+.drop::first-letter {
+  float: left;
+  font-family: var(--type-display);
+  font-size: 3.6em;
+  line-height: 0.78;
+  padding: 0.06em var(--s-3) 0 0;
+  color: var(--sanguine);
+}
+
+/* ---- The folio grid --------------------------------------------
+   A wide text column and a narrow margin column standing in
+   golden section, exactly as a Renaissance page was ruled. */
+
+.folio {
+  position: relative;
+  z-index: 1;
+  width: min(100% - var(--s-5) * 2, var(--folio));
+  margin-inline: auto;
+}
+
+.recto-verso {
+  display: grid;
+  grid-template-columns: minmax(0, 1.618fr) minmax(0, 1fr);
+  gap: var(--s-6);
+  align-items: start;
+}
+@media (max-width: 62rem) {
+  .recto-verso { grid-template-columns: 1fr; gap: var(--s-5); }
+}
+
+/* ---- Chapters --------------------------------------------------- */
+
+.chapter {
+  position: relative;
+  z-index: 1;
+  padding-block: var(--s-9) var(--s-8);
+  scroll-margin-top: var(--s-6);
+}
+@media (max-width: 62rem) { .chapter { padding-block: var(--s-8) var(--s-7); } }
+
+/* Sfumato joins: chapters bleed into one another rather than
+   meeting at a line. */
+.chapter + .chapter::before {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  height: var(--s-8);
+  transform: translateY(-100%);
+  pointer-events: none;
+  background: linear-gradient(to bottom, transparent, var(--join, transparent));
+}
+
+.chapter-head { margin-bottom: var(--s-7); }
+.chapter-head .numeral {
+  display: block;
+  font-family: var(--type-label);
+  font-size: var(--t-sm);
+  letter-spacing: 0.5em;
+  color: var(--gold);
+  margin-bottom: var(--s-3);
+}
+.chapter-head h2 {
+  font-size: clamp(var(--t-2xl), 7vw, var(--t-3xl));
+  font-style: italic;
+}
+.chapter-head .gloss {
+  font-family: var(--type-label);
+  font-size: var(--t-xs);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--ink-ghost);
+  margin-top: var(--s-3);
+}
+.chapter-head .standfirst {
+  margin-top: var(--s-4);
+  font-size: var(--t-md);
+  line-height: 1.52;
+  color: var(--ink-soft);
+  max-width: 42rem;
+}
+
+/* A ruled line, drawn the way a silverpoint rule fades at its ends */
+.rule {
+  height: 1px;
+  border: 0;
+  margin: var(--s-6) 0;
+  background: linear-gradient(to right, transparent, var(--hairline) 12%, var(--hairline) 88%, transparent);
+}
+
+/* ---- Utility ----------------------------------------------------- */
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+:where(button, [role="button"], a, input, textarea, summary):focus-visible {
+  outline: 2px solid var(--sanguine);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+::selection { background: rgb(164 68 47 / 0.22); }
+
+/* ---- Buttons: pressed into the page, not stuck on top ----------- */
+
+.btn {
+  font-family: var(--type-label);
+  font-size: var(--t-xs);
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  background: linear-gradient(to bottom, rgb(255 250 236 / 0.6), rgb(201 182 145 / 0.28));
+  border: 1px solid var(--hairline);
+  border-radius: 2px;
+  padding: var(--s-2) var(--s-4);
+  cursor: pointer;
+  transition: color var(--dur-fast) var(--ease-sfumato),
+              background var(--dur-fast) var(--ease-sfumato),
+              box-shadow var(--dur-fast) var(--ease-sfumato);
+  box-shadow: var(--veil-1);
+}
+.btn:hover { color: var(--ink); background: linear-gradient(to bottom, rgb(255 252 242 / 0.85), rgb(201 182 145 / 0.4)); }
+.btn[aria-pressed="true"], .btn.is-on {
+  color: var(--parchment-lit);
+  background: linear-gradient(to bottom, var(--sanguine-soft), var(--sanguine));
+  border-color: rgb(120 44 30 / 0.5);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.18);
+}
+
+.btn-row { display: flex; flex-wrap: wrap; gap: var(--s-2); align-items: center; }
+
+/* ---- Reduced motion --------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
