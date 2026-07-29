@@ -4,15 +4,25 @@ A living codex of Leonardo da Vinci — six chapters in a single scroll-through 
 
 Il Metodo · Le Opere · I Fogli · Le Macchine Vive · Dentro i Dipinti · Lo Specchio
 
-## Open locally
+## Develop locally
 
-Serve the folder over HTTP (ES modules need a server; opening `index.html` as a file will fail):
+Install the pinned dependencies and start the Vite development server:
 
 ```bash
-npx --yes serve -l 8099 .
+npm install
+npm run dev
 ```
 
-Then open [http://127.0.0.1:8099](http://127.0.0.1:8099).
+Vite prints the local URL when it starts. Opening `index.html` as a file is not supported.
+
+## Verify and build
+
+```bash
+npm test
+npm run build
+```
+
+The production output is written to `dist/`.
 
 ## What’s inside
 
@@ -25,8 +35,8 @@ Then open [http://127.0.0.1:8099](http://127.0.0.1:8099).
 | **V · Dentro i Dipinti** | Walkable Last Supper; Mona Lisa depth dive with sfumato fog |
 | **VI · Lo Specchio** | Mirror-writing playground |
 
-Heavy Three.js scenes load only when their chapter approaches the viewport. All plates are public-domain Wikimedia Commons images, hotlinked at responsive thumbnail sizes.
+Heavy Three.js scenes load only when their chapter approaches the viewport. Three.js is bundled locally by Vite; artwork is currently loaded from the source URLs recorded in the image manifest.
 
 ## Sources & caveats
 
-See the Colophon on the page itself. Historical claims follow Kemp; machine models are proportional readings of the drawings, not measured reconstructions.
+See the Colophon and object-level credits on the page itself. Historical claims follow Kemp; machine models are proportional readings of the drawings, not measured reconstructions. Artwork licenses vary and are recorded beside each artifact.

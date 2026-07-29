@@ -4,6 +4,8 @@
    armature, and annotations that stay shut until asked for.
    ============================================================ */
 
+import { fieldbookHas, fieldbookToggle } from './fieldbook.js';
+
 const $ = (s, r = document) => r.querySelector(s);
 const PHI_INV = 0.6180339887;
 
@@ -29,7 +31,10 @@ export function buildOpere({ plateImg, rise, WORKS, PLATES }) {
     spots: $('[data-tool="spots"]', stage),
   };
 
-  const state = { work: WORKS[0], lens: false, phi: false, spots: false };
+  const requestedWork = new URLSearchParams(window.location.search).get('work');
+  const initialWork = WORKS.find((work) => work.id === requestedWork) || WORKS[0];
+  const state = { work: initialWork, lens: false, phi: false, spots: false };
+  let showRequest = 0;
 
   /* ---- index of plates ------------------------------------- */
 
@@ -39,7 +44,10 @@ export function buildOpere({ plateImg, rise, WORKS, PLATES }) {
       const li = document.createElement('li');
       const b = document.createElement('button');
       b.type = 'button';
-      b.append(plateImg(w.plate, { alt: '', sizes: '7rem' }));
+      const thumb = document.createElement('span');
+      thumb.className = 'idx-img';
+      thumb.append(plateImg(w.plate, { alt: '', sizes: '7rem' }));
+      b.append(thumb);
       const t = document.createElement('span');
       t.className = 'idx-t';
       t.textContent = w.title;
@@ -211,6 +219,7 @@ export function buildOpere({ plateImg, rise, WORKS, PLATES }) {
   /* ---- showing a work ---------------------------------------- */
 
   function show(work) {
+    const request = ++showRequest;
     state.work = work;
     const p = PLATES[work.plate];
     if (!p) return;
@@ -218,6 +227,7 @@ export function buildOpere({ plateImg, rise, WORKS, PLATES }) {
     for (const [id, b] of indexButtons) b.classList.toggle('is-current', id === work.id);
 
     img.classList.remove('is-in');
+    loading.textContent = 'Unrolling the plate…';
     loading.hidden = false;
     spotsHost.textContent = '';
     readout.hidden = true;
@@ -227,7 +237,19 @@ export function buildOpere({ plateImg, rise, WORKS, PLATES }) {
     if (p.srcset) { next.srcset = p.srcset; next.sizes = '(max-width: 68rem) 92vw, 58rem'; }
     next.src = p.src;
 
-    const settle = () => {
+    const settle = async () => {
+      if (request !== showRequest) return;
+      if (!next.naturalWidth) {
+        loading.textContent = 'This plate would not load.';
+        return;
+      }
+      try {
+        await next.decode();
+      } catch {
+        loading.textContent = 'This plate could not be decoded.';
+        return;
+      }
+      if (request !== showRequest) return;
       img.src = next.currentSrc || next.src;
       if (p.srcset) { img.srcset = p.srcset; img.sizes = '(max-width: 68rem) 92vw, 58rem'; }
       img.width = p.w;
@@ -248,13 +270,17 @@ export function buildOpere({ plateImg, rise, WORKS, PLATES }) {
     if (next.complete) settle();
     else {
       next.addEventListener('load', settle, { once: true });
-      next.addEventListener('error', () => { loading.textContent = 'This plate would not load.'; }, { once: true });
+      next.addEventListener('error', () => {
+        if (request === showRequest) loading.textContent = 'This plate would not load.';
+      }, { once: true });
     }
 
     renderApparatus(work);
   }
 
   function renderApparatus(w) {
+    const fieldbookId = `work:${w.id}`;
+    const asset = PLATES[w.plate];
     metaHost.innerHTML = `
       <h3>${w.title}</h3>
       ${w.subtitle ? `<p class="work-sub">${w.subtitle}</p>` : ''}
@@ -263,7 +289,18 @@ export function buildOpere({ plateImg, rise, WORKS, PLATES }) {
         <div><dt>Medium</dt><dd>${w.medium}</dd></div>
         <div><dt>Size</dt><dd>${w.size}</dd></div>
         <div><dt>Where</dt><dd>${w.home}</dd></div>
-      </dl>`;
+      </dl>
+      <button class="save-work" type="button" data-save-work aria-pressed="${fieldbookHas(fieldbookId)}">
+        ${fieldbookHas(fieldbookId) ? 'Saved to fieldbook' : 'Save to fieldbook'}
+      </button>
+      ${asset ? `<p class="asset-credit"><a href="${asset.page}" target="_blank" rel="noopener noreferrer">${asset.artist || 'Creator not recorded in the image manifest'}</a> · ${asset.license}</p>` : ''}`;
+
+    const save = $('[data-save-work]', metaHost);
+    save.addEventListener('click', () => {
+      const saved = fieldbookToggle(fieldbookId);
+      save.setAttribute('aria-pressed', String(saved));
+      save.textContent = saved ? 'Saved to fieldbook' : 'Save to fieldbook';
+    });
 
     noteHost.innerHTML = `
       <p>${w.note}</p>
@@ -278,7 +315,7 @@ export function buildOpere({ plateImg, rise, WORKS, PLATES }) {
     rt = setTimeout(() => { if (state.phi) sizeOverlay(); }, 140);
   });
 
-  show(WORKS[0]);
+  show(initialWork);
   rise(stage);
   if (index) rise(index);
 }

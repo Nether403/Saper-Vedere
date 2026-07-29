@@ -1,0 +1,16 @@
+# Saper Vedere
+
+Saper Vedere is an interactive Atlas and Codex of Leonardo da Vinci's works,
+methods, and cross-disciplinary ideas.
+
+## Primary sections
+
+- [Atlas of Causes](./#atlas) - Light, Flow, Force, and Measure
+- [Paintings](./#opere) - paintings and close-looking annotations
+- [Notebook folios](./#fogli) - facsimile sheets and commentary
+- [Machine studies](./#macchine) - interpretive machine animations
+- [Painting-space studies](./#dipinti) - interpretive spatial experiences
+- [Mirror fieldbook](./#specchio) - mirror-writing interaction
+- [Sources and rights](./#colophon) - sources, rights, and declared departures
+
+Artwork credits and licenses are presented beside individual artifacts.

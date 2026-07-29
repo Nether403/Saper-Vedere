@@ -6,6 +6,7 @@
 <title>Saper Vedere — a living codex of Leonardo da Vinci</title>
 <meta name="description" content="A scroll-through Renaissance codex: Leonardo's method turned into the design rules of the page that describes it. Annotated paintings, blueprint folios, three machines rebuilt in three dimensions, two paintings you can walk into, and a mirror to write backwards in.">
 <meta name="color-scheme" content="light">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23ece1c9'/%3E%3Cpath d='M14 46c12-7 20-20 35-28M17 18c8 8 17 18 30 29M32 9v46M9 32h46' fill='none' stroke='%23a4442f' stroke-width='2'/%3E%3Ccircle cx='32' cy='32' r='19' fill='none' stroke='%23b08a3e'/%3E%3C/svg%3E">
 
 <meta property="og:title" content="Saper Vedere — a living codex of Leonardo da Vinci">
 <meta property="og:description" content="Leonardo's method, turned into the design rules of the page that describes it.">
@@ -24,6 +25,27 @@
 
 <a class="skip" href="#metodo">Skip to the codex</a>
 
+<nav class="masthead" aria-label="Primary">
+  <a class="masthead-mark" href="#incipit" aria-label="SV, Saper Vedere home">SV</a>
+  <div class="masthead-links">
+    <a href="#atlas">Atlas</a>
+    <a href="#opere">Codex</a>
+    <a href="#colophon">Sources</a>
+  </div>
+  <button class="masthead-fieldbook" type="button" data-fieldbook-open>Fieldbook <span data-fieldbook-count>0</span></button>
+</nav>
+
+<dialog class="fieldbook-dialog" data-fieldbook-dialog aria-labelledby="fieldbook-title">
+  <div class="fieldbook-head">
+    <div>
+      <p class="label">Your observations</p>
+      <h2 id="fieldbook-title">Fieldbook</h2>
+    </div>
+    <button class="fieldbook-close" type="button" data-fieldbook-close aria-label="Close fieldbook">Close</button>
+  </div>
+  <div class="fieldbook-items" data-fieldbook-items></div>
+</dialog>
+
 <!-- ===== Chapter rail ===================================== -->
 <nav class="rail" aria-label="Chapters">
   <span class="rail-line" aria-hidden="true"><i data-rail-progress></i></span>
@@ -41,10 +63,17 @@
 
 <!-- ===== Incipit ========================================== -->
 <header class="incipit" id="incipit">
-  <div class="incipit-plate" aria-hidden="true" data-hero-plate></div>
+  <div class="incipit-plate" data-hero-plate>
+    <div class="incipit-trace" aria-hidden="true">
+      <span style="--x: 63%; --y: 29%; --d: 0ms">water</span>
+      <span style="--x: 77%; --y: 53%; --d: 100ms">air</span>
+      <span style="--x: 42%; --y: 68%; --d: 200ms">hair</span>
+      <span style="--x: 23%; --y: 43%; --d: 300ms">stone</span>
+    </div>
+  </div>
 
   <div class="folio incipit-inner">
-    <p class="label incipit-kicker">Leonardo di ser Piero da Vinci &nbsp;·&nbsp; 1452 &ndash; 1519</p>
+    <p class="label incipit-kicker">An atlas of Leonardo da Vinci &nbsp;·&nbsp; 1452 &ndash; 1519</p>
 
     <h1 class="incipit-title">
       <span class="mirror-title" data-mirror-title>
@@ -53,27 +82,67 @@
       </span>
     </h1>
 
-    <p class="incipit-gloss">
-      <em>Knowing how to see.</em> His phrase for the discipline underneath
-      every art and every science he touched.
-    </p>
+    <p class="incipit-gloss"><em>Knowing how to see.</em></p>
 
     <p class="incipit-lede">
-      He wrote from right to left, in mirror image, across some seven thousand
-      surviving sheets. What follows is a codex in six chapters — his method,
-      his paintings, his folios, three of his machines rebuilt so they turn,
-      two of his paintings opened so you can walk inside, and a mirror of your
-      own. The page you are reading obeys the rules set out in Chapter&nbsp;I.
+      He did not divide art from anatomy, water from hair, or flight from
+      mechanics. He followed causes across disciplines. Begin with one line
+      of moving water and watch it become weather, muscle, smoke and machine.
     </p>
 
+    <div class="incipit-question">
+      <p>Which way is the water moving?</p>
+      <button class="observe-btn" type="button" data-observe aria-pressed="false">
+        Trace the current
+        <span aria-hidden="true">↗</span>
+      </button>
+    </div>
+
     <div class="incipit-cue">
-      <span class="label">Descend</span>
+      <span class="label">Enter the atlas</span>
       <span class="incipit-cue-line" aria-hidden="true"></span>
     </div>
+    <p class="asset-credit incipit-credit" data-hero-credit></p>
   </div>
 </header>
 
 <main>
+
+<!-- ===== Atlas of causes ==================================== -->
+<section class="atlas-map" id="atlas" aria-labelledby="atlas-title">
+  <div class="folio">
+    <div class="atlas-intro">
+      <p class="numeral">The Atlas of Causes</p>
+      <h2 id="atlas-title">Four currents,<br>one restless mind.</h2>
+      <p>
+        Leonardo's subjects are not separate rooms. Each is a door into the
+        next. Choose a current, or descend into the complete Codex.
+      </p>
+    </div>
+    <div class="atlas-currents">
+      <a class="atlas-current atlas-current-light" href="#opere">
+        <span class="atlas-current-n">I</span>
+        <span class="atlas-current-name">Light / Eye</span>
+        <span class="atlas-current-desc">Sfumato, perception, shadow, atmosphere</span>
+      </a>
+      <a class="atlas-current atlas-current-flow" href="#fogli">
+        <span class="atlas-current-n">II</span>
+        <span class="atlas-current-name">Flow / Air / Water</span>
+        <span class="atlas-current-desc">Vortices, weather, hair, flight, geology</span>
+      </a>
+      <a class="atlas-current atlas-current-force" href="#macchine">
+        <span class="atlas-current-n">III</span>
+        <span class="atlas-current-name">Force / Body / Mechanism</span>
+        <span class="atlas-current-desc">Anatomy, gesture, power, gears, motion</span>
+      </a>
+      <a class="atlas-current atlas-current-measure" href="#dipinti">
+        <span class="atlas-current-n">IV</span>
+        <span class="atlas-current-name">Measure / Space</span>
+        <span class="atlas-current-desc">Proportion, perspective, scale, distortion</span>
+      </a>
+    </div>
+  </div>
+</section>
 
 <!-- ===== I · Il Metodo ==================================== -->
 <section class="chapter chapter-metodo" id="metodo">
@@ -168,12 +237,11 @@
       <span class="numeral">Capitolo IV</span>
       <h2>Le Macchine Vive</h2>
       <p class="gloss">The machines, set in motion</p>
-      <p class="standfirst">
-        Three devices, rebuilt from the drawings as line models you can turn
-        over in your hands. They are shown as he would have shown them —
-        construction lines rather than surfaces — because in every case the
-        interesting thing is the linkage, and in two of the three cases the
-        interesting thing is also why it could never have worked.
+       <p class="standfirst">
+        Three animated readings of the drawings, built as line models you can
+        turn over in your hands. They are explanatory diagrams rather than
+        measured reconstructions: observed parts, inferred linkages, and open
+        questions remain visible together.
       </p>
     </div>
 
@@ -210,6 +278,7 @@
           </div>
         </div>
         <div class="enterable-apparatus">
+          <p class="evidence-label">Interpretive perspective model</p>
           <h3>The refectory</h3>
           <p>
             Santa Maria delle Grazie, Milan, 1495&ndash;98. The painted architecture
@@ -222,6 +291,7 @@
             the room stops distorting — that is where Leonardo stood to set it out.
           </p>
           <div class="btn-row" data-scene-controls hidden></div>
+          <p class="asset-credit" data-scene-credit></p>
         </div>
       </article>
 
@@ -237,6 +307,7 @@
           </div>
         </div>
         <div class="enterable-apparatus">
+          <p class="evidence-label">Interpretive depth study</p>
           <h3>The depth of a face</h3>
           <p>
             The picture is built in receding planes: the parapet and its lost
@@ -249,6 +320,7 @@
             then painted the air.
           </p>
           <div class="btn-row" data-scene-controls hidden></div>
+          <p class="asset-credit" data-scene-credit></p>
         </div>
       </article>
     </div>
@@ -293,26 +365,16 @@
         <ul class="caveats" data-caveats></ul>
         <hr class="rule">
         <p class="marginalia colophon-sig">
-          Set in Cormorant Garamond, EB Garamond and Cinzel. Measured on
-          &phi;&nbsp;=&nbsp;1.618. Plates from Wikimedia Commons, all public
-          domain. Machines and rooms modelled procedurally — no external
-          geometry was loaded to build them.
+          Set in Cormorant Garamond, EB Garamond and Cinzel. Plates are
+          sourced from Wikimedia Commons under their individual recorded
+          licenses. Machines and rooms are interpretive procedural models,
+          not scans of surviving objects or spaces.
         </p>
       </div>
     </div>
   </div>
 </footer>
 
-<script type="importmap">
-{
-  "imports": {
-    "three": "https://unpkg.com/three@0.170.0/build/three.module.js",
-    "three/addons/": "https://unpkg.com/three@0.170.0/examples/jsm/"
-  }
-}
-</script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
 <script type="module" src="src/js/main.js"></script>
 
 </body>

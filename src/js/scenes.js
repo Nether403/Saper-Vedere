@@ -245,11 +245,14 @@ async function mountCenacolo(stage, plate, reduced) {
     orthos(on) { orthos.visible = on; },
   };
 
-  const clock = new THREE.Clock();
-  function loop() {
-    requestAnimationFrame(loop);
-    if (!api.visible) { clock.getDelta(); return; }
-    const dt = Math.min(clock.getDelta(), 0.05);
+  const timer = new THREE.Timer();
+  timer.connect(document);
+  api.raf = 0;
+  function loop(time) {
+    api.raf = 0;
+    timer.update(time);
+    if (!api.visible) return;
+    const dt = Math.min(timer.getDelta(), 0.05);
 
     const speed = 6 * dt;
     if (keys.has('w') || keys.has('arrowup')) target.z -= speed;
@@ -276,11 +279,15 @@ async function mountCenacolo(stage, plate, reduced) {
           : `${(cam.z - home.z).toFixed(1)} m from Leonardo’s viewpoint`;
 
     renderer.render(scene, camera);
+    api.raf = requestAnimationFrame(loop);
   }
-  loop();
+  renderer.render(scene, camera);
 
   new IntersectionObserver(
-    (e) => { api.visible = e[0].isIntersecting; },
+    (e) => {
+      api.visible = e[0].isIntersecting;
+      if (api.visible && !api.raf) api.raf = requestAnimationFrame(loop);
+    },
     { threshold: 0.02 }
   ).observe(stage);
 
@@ -493,11 +500,14 @@ async function mountGioconda(stage, plate, reduced) {
     setHaze(on) { state.haze = on; },
   };
 
-  const clock = new THREE.Clock();
-  function loop() {
-    requestAnimationFrame(loop);
-    if (!api.visible) { clock.getDelta(); return; }
-    const dt = Math.min(clock.getDelta(), 0.05);
+  const timer = new THREE.Timer();
+  timer.connect(document);
+  api.raf = 0;
+  function loop(time) {
+    api.raf = 0;
+    timer.update(time);
+    if (!api.visible) return;
+    const dt = Math.min(timer.getDelta(), 0.05);
     const k = 1 - Math.pow(0.002, dt);
 
     shown.sep += (state.sep - shown.sep) * k;
@@ -527,15 +537,19 @@ async function mountGioconda(stage, plate, reduced) {
         : `Depth separated · ${pct}% — the haze between the planes is the sfumato`;
 
     renderer.render(scene, camera);
+    api.raf = requestAnimationFrame(loop);
   }
-  loop();
 
   new IntersectionObserver(
-    (e) => { api.visible = e[0].isIntersecting; },
+    (e) => {
+      api.visible = e[0].isIntersecting;
+      if (api.visible && !api.raf) api.raf = requestAnimationFrame(loop);
+    },
     { threshold: 0.02 }
   ).observe(stage);
 
   layout();
+  renderer.render(scene, camera);
   return api;
 }
 
@@ -551,12 +565,16 @@ export function buildScenes({ PLATES, REDUCED }) {
     const coverImg = art.querySelector('[data-scene-cover-img]');
     const enter = art.querySelector('[data-scene-enter]');
     const controls = art.querySelector('[data-scene-controls]');
+    const credit = art.querySelector('[data-scene-credit]');
     const plate = PLATES[id === 'cenacolo' ? 'cenacolo' : 'monalisa'];
     if (!plate || !stage) continue;
 
     coverImg.src = plate.src;
     if (plate.srcset) { coverImg.srcset = plate.srcset; coverImg.sizes = '(max-width: 68rem) 92vw, 52rem'; }
     coverImg.alt = '';
+    if (credit) {
+      credit.innerHTML = `<a href="${plate.page}" target="_blank" rel="noopener noreferrer">${plate.artist || 'Creator not recorded in the image manifest'}</a> · ${plate.license}`;
+    }
 
     enter.addEventListener(
       'click',

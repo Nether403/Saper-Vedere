@@ -465,24 +465,31 @@ function mountViewer(stage, id, reduced) {
   }
   resize();
   new ResizeObserver(resize).observe(stage);
+  controls.update();
+  renderer.render(scene, camera);
 
-  const clock = new THREE.Clock();
+  const timer = new THREE.Timer();
+  timer.connect(document);
   const api = { running: !reduced, visible: false, raf: 0 };
 
-  function loop() {
-    api.raf = requestAnimationFrame(loop);
+  function loop(time) {
+    api.raf = 0;
+    timer.update(time);
     if (!api.visible) return;
-    const dt = Math.min(clock.getDelta(), 0.05);
-    model.tick(clock.elapsedTime, dt, api.running);
+    const dt = Math.min(timer.getDelta(), 0.05);
+    model.tick(timer.getElapsed(), dt, api.running);
     controls.autoRotate = api.running && !reduced;
     controls.update();
     renderer.render(scene, camera);
+    api.raf = requestAnimationFrame(loop);
   }
-  loop();
 
-  // Only spend frames while the machine is actually on screen.
+  // Schedule frames only while the machine is actually on screen.
   new IntersectionObserver(
-    (entries) => { api.visible = entries[0].isIntersecting; },
+    (entries) => {
+      api.visible = entries[0].isIntersecting;
+      if (api.visible && !api.raf) api.raf = requestAnimationFrame(loop);
+    },
     { threshold: 0.05 }
   ).observe(stage);
 
@@ -491,7 +498,7 @@ function mountViewer(stage, id, reduced) {
 
 /* ---- chapter assembly ---------------------------------------- */
 
-export function buildMachines({ plateImg, rise, REDUCED }) {
+export function buildMachines({ plateImg, rise, PLATES, REDUCED }) {
   const host = document.querySelector('[data-machines]');
   if (!host) return;
 
@@ -517,6 +524,7 @@ export function buildMachines({ plateImg, rise, REDUCED }) {
     const apparatus = document.createElement('div');
     apparatus.className = 'machine-apparatus';
     apparatus.innerHTML = `
+      <p class="evidence-label">Explanatory animation · proportional reading</p>
       <h3>${m.title}</h3>
       <p class="ref">${m.en} · ${m.ref}</p>
       <p>${m.body}</p>
@@ -542,7 +550,8 @@ export function buildMachines({ plateImg, rise, REDUCED }) {
     fig.className = 'machine-thumb';
     fig.append(plateImg(m.plate, { alt: `${m.en}, as drawn`, sizes: '12rem' }));
     const fc = document.createElement('figcaption');
-    fc.textContent = 'The folio it was modelled from';
+    const asset = PLATES[m.plate];
+    fc.innerHTML = `The folio it was modelled from${asset ? `<span class="asset-credit"><a href="${asset.page}" target="_blank" rel="noopener noreferrer">${asset.artist || 'Creator not recorded in the image manifest'}</a> · ${asset.license}</span>` : ''}`;
     fig.append(fc);
     apparatus.append(fig);
 

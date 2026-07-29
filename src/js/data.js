@@ -454,7 +454,7 @@ export const MIRROR_SAMPLES = [
 /* --- Colophon ------------------------------------------------- */
 
 export const SOURCES = [
-  { t: 'Wikimedia Commons', d: 'Every plate reproduced here is in the public domain and is loaded directly from Commons at one of its standard thumbnail sizes. Nothing has been redrawn, retouched or generated.', u: 'https://commons.wikimedia.org/wiki/Category:Leonardo_da_Vinci' },
+  { t: 'Wikimedia Commons', d: 'Artwork reproductions are loaded from Commons under the license recorded beside each object. Most are public domain; several modern photographs or derivatives require attribution and share-alike terms.', u: 'https://commons.wikimedia.org/wiki/Category:Leonardo_da_Vinci' },
   { t: 'Royal Collection Trust', d: 'The Windsor sheets \u2014 the anatomy, the deluges, the plants, the cats \u2014 are the largest single group of his drawings anywhere, about 550 of them, bound into an album by the 1690s.', u: 'https://www.rct.uk/collection/themes/collections/leonardo-da-vinci-drawings' },
   { t: 'Codex Atlanticus, Biblioteca Ambrosiana', d: 'Twelve volumes, 1,119 sheets, assembled by Pompeo Leoni in the 1580s. The cart and the giant crossbow are here.', u: 'https://www.leonardodigitale.com/' },
   { t: 'Paris Manuscripts, Institut de France', d: 'Twelve small notebooks, including Manuscript B with the aerial screw, the flying machine and the church studies.', u: 'https://www.leonardodigitale.com/' },

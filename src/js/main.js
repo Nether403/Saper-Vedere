@@ -4,6 +4,7 @@
 
 import { PLATES } from './images.js';
 import { PRINCIPLES, WORKS, FOLIOS, MIRROR_SAMPLES, SOURCES, CAVEATS } from './data.js';
+import { fieldbookItems } from './fieldbook.js';
 
 const $ = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
@@ -15,13 +16,14 @@ export function plateImg(key, { alt = '', sizes = '100vw', eager = false } = {})
   const p = PLATES[key];
   const img = document.createElement('img');
   if (!p) return img;
-  img.src = p.src;
-  if (p.srcset) { img.srcset = p.srcset; img.sizes = sizes; }
+  img.loading = eager ? 'eager' : 'lazy';
+  img.decoding = 'async';
   img.width = p.w;
   img.height = p.h;
   img.alt = alt;
-  img.decoding = 'async';
-  if (!eager) img.loading = 'lazy';
+  img.sizes = sizes;
+  if (p.srcset) img.srcset = p.srcset;
+  img.src = p.src;
   return img;
 }
 
@@ -44,7 +46,7 @@ const riseObserver = new IntersectionObserver(
 function rise(el, delay = 0) {
   if (REDUCED) { el.classList.add('is-risen'); return; }
   el.setAttribute('data-rise', '');
-  el.style.transition = `opacity var(--dur-slow) var(--ease-sfumato) ${delay}ms, transform var(--dur-slow) var(--ease-sfumato) ${delay}ms`;
+  el.style.setProperty('--rise-delay', `${delay}ms`);
   riseObserver.observe(el);
 }
 
@@ -54,9 +56,28 @@ function rise(el, delay = 0) {
 
 function buildIncipit() {
   const plate = $('[data-hero-plate]');
-  if (plate && PLATES.vitruvio) {
-    plate.style.backgroundImage = `url("${PLATES.vitruvio.src}")`;
+  if (plate && PLATES.acqua) {
+    const image = plateImg('acqua', {
+      alt: 'Leonardo da Vinci, studies of water passing obstacles and falling',
+      sizes: '(max-width: 62rem) 100vw, 62vw',
+      eager: true,
+    });
+    image.fetchPriority = 'high';
+    plate.prepend(image);
+    const credit = $('[data-hero-credit]');
+    if (credit) {
+      const asset = PLATES.acqua;
+      credit.innerHTML = `<a href="${asset.page}" target="_blank" rel="noopener noreferrer">${asset.artist || 'Creator not recorded in the image manifest'}</a> · ${asset.license}`;
+    }
   }
+
+  const observe = $('[data-observe]');
+  observe?.addEventListener('click', () => {
+    const traced = plate?.dataset.state === 'traced';
+    if (plate) plate.dataset.state = traced ? '' : 'traced';
+    observe.setAttribute('aria-pressed', String(!traced));
+    observe.firstChild.textContent = traced ? 'Trace the current ' : 'Hide the trace ';
+  });
 
   const title = $('[data-mirror-title]');
   if (!title) return;
@@ -75,7 +96,7 @@ function buildIncipit() {
 
 function buildPrinciples() {
   const list = $('[data-principles]');
-  if (!list) return;
+  if (!list || list.children.length) return;
 
   for (const p of PRINCIPLES) {
     const li = document.createElement('li');
@@ -102,7 +123,7 @@ function buildPrinciples() {
 
 function buildFolios() {
   const host = $('[data-folios]');
-  if (!host) return;
+  if (!host || host.children.length) return;
 
   for (const g of FOLIOS) {
     const sec = document.createElement('section');
@@ -128,10 +149,12 @@ function buildFolios() {
       frame.append(plateImg(s.plate, { alt: s.title, sizes: '(max-width: 48rem) 90vw, 22rem' }));
 
       const cap = document.createElement('figcaption');
+      const asset = PLATES[s.plate];
       cap.innerHTML = `
         <h4>${s.title}</h4>
         <p class="ref">${s.ref} · ${s.date}</p>
-        <p class="d">${s.d}</p>`;
+        <p class="d">${s.d}</p>
+        ${asset ? `<p class="asset-credit"><a href="${asset.page}" target="_blank" rel="noopener noreferrer">${asset.artist || 'Creator not recorded in the image manifest'}</a> · ${asset.license}</p>` : ''}`;
 
       fig.append(frame, cap);
       grid.append(fig);
@@ -154,7 +177,7 @@ function buildSpecchio() {
   host.innerHTML = `
     <div class="specchio-write">
       <p class="specchio-legend">As you write it</p>
-      <textarea class="specchio-field" data-mirror-in rows="5"
+      <textarea class="specchio-field" data-mirror-in id="mirror-field" name="mirror-field" rows="5"
         spellcheck="false"
         placeholder="Write here, left to right, the ordinary way…"></textarea>
       <div class="specchio-samples" data-mirror-samples></div>
@@ -210,19 +233,19 @@ function buildSpecchio() {
 
 function buildColophon() {
   const list = $('[data-sources]');
-  if (list) {
+  if (list && !list.children.length) {
     for (const s of SOURCES) {
       const li = document.createElement('li');
       const title = s.u
         ? `<a href="${s.u}" target="_blank" rel="noopener noreferrer">${s.t}</a>`
         : s.t;
-      li.innerHTML = `<h4>${title}</h4><p>${s.d}</p>`;
+      li.innerHTML = `<h3>${title}</h3><p>${s.d}</p>`;
       list.append(li);
     }
   }
 
   const cav = $('[data-caveats]');
-  if (cav) {
+  if (cav && !cav.children.length) {
     for (const c of CAVEATS) {
       const li = document.createElement('li');
       li.innerHTML = c;
@@ -318,19 +341,106 @@ function choreograph() {
    chapter comes within a screen of the viewport.
    ------------------------------------------------------------ */
 
-function whenNear(el, fn, margin = '120% 0px') {
+function whenNear(el, fn, distance = 1.2) {
   if (!el) return;
+  let started = false;
+
+  const load = async () => {
+    if (started) return;
+    started = true;
+    el.dataset.loadState = 'loading';
+    try {
+      await fn();
+      el.dataset.loadState = 'ready';
+      if (window.location.hash === `#${el.id}`) {
+        requestAnimationFrame(() => el.scrollIntoView({ block: 'start' }));
+      }
+    } catch (error) {
+      console.error(error);
+      el.dataset.loadState = 'error';
+      const status = document.createElement('div');
+      status.className = 'chapter-error';
+      status.setAttribute('role', 'status');
+      status.innerHTML = `<p>This interactive chapter could not be opened.</p>`;
+      const retry = document.createElement('button');
+      retry.type = 'button';
+      retry.className = 'btn';
+      retry.textContent = 'Retry';
+      retry.addEventListener('click', () => window.location.reload());
+      status.append(retry);
+      el.querySelector('.folio')?.append(status);
+    }
+  };
+
+  if (window.location.hash === `#${el.id}` || !('IntersectionObserver' in window)) {
+    load();
+    return;
+  }
+
+  const margin = `${Math.round(window.innerHeight * distance)}px 0px`;
   const io = new IntersectionObserver(
     (entries) => {
       for (const e of entries) {
         if (!e.isIntersecting) continue;
         io.disconnect();
-        fn();
+        load();
       }
     },
     { rootMargin: margin }
   );
   io.observe(el);
+}
+
+function buildFieldbook() {
+  const open = $('[data-fieldbook-open]');
+  const dialog = $('[data-fieldbook-dialog]');
+  const close = $('[data-fieldbook-close]');
+  const count = $('[data-fieldbook-count]');
+  const host = $('[data-fieldbook-items]');
+  if (!open || !dialog || !host) return;
+
+  const render = () => {
+    const ids = fieldbookItems();
+    count.textContent = String(ids.length);
+    host.textContent = '';
+    if (!ids.length) {
+      host.innerHTML = `<p class="fieldbook-empty">Nothing saved yet. Open a painting in the Codex and add the works you want to see again.</p>`;
+      return;
+    }
+    for (const id of ids) {
+      const work = WORKS.find((item) => `work:${item.id}` === id);
+      if (!work) continue;
+      const link = document.createElement('a');
+      link.className = 'fieldbook-item';
+      link.href = `?work=${encodeURIComponent(work.id)}#opere`;
+      link.innerHTML = `<span>${work.title}</span><small>${work.date} · ${work.home}</small>`;
+      link.addEventListener('click', () => dialog.close());
+      host.append(link);
+    }
+  };
+
+  open.addEventListener('click', () => { render(); dialog.showModal(); });
+  close?.addEventListener('click', () => dialog.close());
+  dialog.addEventListener('click', (event) => {
+    if (event.target === dialog) dialog.close();
+  });
+  window.addEventListener('fieldbookchange', render);
+  render();
+}
+
+function stabilizeInitialHash() {
+  const target = window.location.hash && document.querySelector(window.location.hash);
+  if (!target) return;
+
+  const timers = [0, 100, 500, 1500, 3500].map((delay) =>
+    window.setTimeout(() => target.scrollIntoView({ block: 'start' }), delay)
+  );
+  const cancel = () => {
+    for (const timer of timers) window.clearTimeout(timer);
+  };
+  for (const event of ['wheel', 'touchstart', 'pointerdown', 'keydown']) {
+    window.addEventListener(event, cancel, { once: true, passive: true });
+  }
 }
 
 function boot() {
@@ -342,6 +452,7 @@ function boot() {
   buildSpecchio();
   buildColophon();
   buildRail();
+  buildFieldbook();
   choreograph();
 
   whenNear($('#opere'), async () => {
@@ -358,6 +469,8 @@ function boot() {
     const m = await import('./scenes.js');
     m.buildScenes({ PLATES, REDUCED });
   });
+
+  stabilizeInitialHash();
 }
 
 if (document.readyState === 'loading') {
