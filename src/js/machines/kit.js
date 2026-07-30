@@ -189,10 +189,22 @@ export function ironStrap(path, width, thickness) {
    `segments` and `radial` go to the shank, exactly as on `spar`;
    `radial` also sets the head's meridians, so shank and dome stay
    in register. `headRings` is the dome's own parallels. The defaults,
-   2, 8 and 5, are the numbers this pin was always turned to. */
+   2, 8 and 5, are the numbers this pin was always turned to.
+
+   All three are clamped and rounded before they leave here. `spar`
+   divides by `segments` and steps by `radial`, so a zero reaches it
+   as a NaN vertex, and one NaN vertex silently deletes a whole mesh
+   on the GPU and poisons the bounding sphere of anything it is merged
+   into. The floors are the least each consumer can actually build
+   from: one ring pair for the shank, three meridians and two
+   parallels for the dome, which is the minimum `SphereGeometry`
+   itself will accept. */
 export function peg(radius, length, { segments = 2, radial = 8, headRings = 5 } = {}) {
-  const shank = spar(length, radius, radius, { swell: 0, radial, segments });
-  const head = new THREE.SphereGeometry(radius * 1.7, radial, headRings, 0, Math.PI * 2, 0, Math.PI * 0.55);
+  const segs = Math.max(1, Math.round(segments));
+  const around = Math.max(3, Math.round(radial));
+  const rings = Math.max(2, Math.round(headRings));
+  const shank = spar(length, radius, radius, { swell: 0, radial: around, segments: segs });
+  const head = new THREE.SphereGeometry(radius * 1.7, around, rings, 0, Math.PI * 2, 0, Math.PI * 0.55);
   head.rotateX(-Math.PI / 2);
   head.translate(0, 0, length / 2);
   return mergeGeometries([shank, head]);

@@ -405,6 +405,22 @@ function signature(geometry) {
   };
 }
 
+/* The same hash over one named attribute's raw bits, or 0 when the
+   geometry does not carry it. `signature` above covers positions and
+   indices; shading also depends on normals, and a change that moved
+   only those would slip past a position hash unnoticed. */
+function attrChecksum(geometry, name) {
+  const a = geometry.getAttribute(name);
+  if (!a) return 0;
+  const bits = new Uint32Array(a.array.buffer, a.array.byteOffset, a.array.length);
+  let h = 2166136261;
+  for (let i = 0; i < bits.length; i++) {
+    h ^= bits[i];
+    h = Math.imul(h, 16777619);
+  }
+  return h >>> 0;
+}
+
 /* Triangles of zero area: invisible, but they poison normals. */
 function degenerateCount(geometry) {
   const p = geometry.getAttribute('position');
@@ -568,7 +584,72 @@ test('peg shank and head subdivide independently', () => {
   assert.ok(signature(peg(0.02, 0.1, { headRings: 14 })).vertices > base, 'headRings should add vertices');
 });
 
-test('solidGear subdivides its thickness, hub and web without touching the teeth', () => {
+test('the default normals and uvs are frozen too, not just the positions', () => {
+  // The promise is byte-identical geometry, and shading reads normals.
+  // These hashes were measured on the committed tree before the
+  // subdivision options existed, so they pin the whole default output.
+  const frozen = [
+    [beam(2, 0.2, 0.3), 4049088648, 0],
+    [beam(2, 0.2, 0.2, { taper: 0.5 }), 3248599080, 0],
+    [beam(1, 0.4, 0.4, { chamfer: 0.05 }), 877720497, 0],
+    [beam(0.92, 0.055, 0.11, { taper: 0.45 }), 1269996394, 0],
+    [peg(0.02, 0.1), 90181864, 1257800144],
+    [peg(0.014, 0.075), 8522139, 1257800144],
+    [solidGear(1, 34, 0.07, { spokes: 8 }), 1543097903, 0],
+    [solidGear(1, 34, 0.07), 1128045175, 0],
+    [solidGear(1, 12, 0.1, { depth: 0.15 }), 3247997427, 0],
+    [solidGear(1, 12, 0.1, { spokes: 6 }), 3350803958, 0],
+    [solidGear(0.6, 20, 0.05, { hub: 0.3 }), 1621687524, 0],
+  ];
+  for (const [g, normal, uv] of frozen) {
+    assert.equal(attrChecksum(g, 'normal'), normal, 'a default normal buffer moved');
+    assert.equal(attrChecksum(g, 'uv'), uv, 'a default uv buffer moved');
+  }
+});
+
+test('peg clamps a nonsense setting instead of emitting NaN', () => {
+  // spar divides by segments and steps by radial, so a zero arrives as a
+  // NaN vertex — and one NaN silently deletes the whole mesh on the GPU.
+  // Task 11 sizes 36 pegs programmatically, so a bad value is reachable.
+  const nonsense = [
+    { segments: 0 }, { segments: -3 }, { segments: 0.4 }, { segments: 2.6 },
+    { radial: 0 }, { radial: -5 }, { radial: 1 }, { radial: 2 }, { radial: 7.5 }, { radial: 8.7 },
+    { headRings: 0 }, { headRings: -2 }, { headRings: 1 }, { headRings: 1.5 }, { headRings: 4.6 },
+    { segments: 0, radial: 0, headRings: 0 },
+    { segments: -1, radial: -1, headRings: -1 },
+  ];
+  for (const opts of nonsense) {
+    const g = peg(0.02, 0.1, opts);
+    const label = JSON.stringify(opts);
+    expectFinite(g);
+    assert.equal(degenerateCount(g), 0, `${label} produced zero-area triangles`);
+    assert.ok(g.getAttribute('position').count > 0, `${label} produced nothing`);
+    // Whatever was asked for, a pin is still a pin: a head standing
+    // proud of a shank of the radius requested.
+    const b = bounds(g);
+    assert.ok(b.max[2] > 0.05, `${label} lost its head, max z was ${b.max[2]}`);
+    assert.ok(Math.abs(b.min[2] - -0.05) < 1e-6, `${label} lost its shank, min z was ${b.min[2]}`);
+  }
+});
+
+test('peg clamps to the floor each consumer can actually build from', () => {
+  // Below the floors, every setting collapses onto the same geometry:
+  // one ring pair on the shank, three meridians and two parallels on
+  // the dome. SphereGeometry will accept no less.
+  const floor = signature(peg(0.02, 0.1, { segments: 1, radial: 3, headRings: 2 }));
+  for (const opts of [
+    { segments: 0, radial: 0, headRings: 0 },
+    { segments: -9, radial: -9, headRings: -9 },
+    { segments: 0.2, radial: 2.4, headRings: 1.6 },
+  ]) {
+    assert.deepEqual(signature(peg(0.02, 0.1, opts)), floor, `${JSON.stringify(opts)} did not land on the floor`);
+  }
+});
+
+/* Each of the four raises the count on its own. The tooth profile is
+   guarded elsewhere: any change to the 0.22/0.48/0.7 offsets moves the
+   default geometry and trips the frozen checksums above. */
+test('each solidGear density option raises the count on its own', () => {
   const plain = signature(solidGear(1, 34, 0.07));
   const thick = signature(solidGear(1, 34, 0.07, { segments: 4 }));
   const hubbed = signature(solidGear(1, 34, 0.07, { hubSegments: 64 }));
