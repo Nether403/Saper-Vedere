@@ -115,3 +115,99 @@ test('peg has a head wider than its shank', () => {
   assert.ok(head > shank, `head ${head} should exceed shank ${shank}`);
   expectFinite(g);
 });
+
+import { canvasPanel, rope, ropeLashing, seamLines } from '../../src/js/machines/kit.js';
+
+test('rope runs between its endpoints', () => {
+  const g = rope([new THREE.Vector3(0, 0, 0), new THREE.Vector3(2, 0, 0)], 0.05);
+  const b = bounds(g);
+  assert.ok(b.min[0] <= 0.06, `should start near x=0, got ${b.min[0]}`);
+  assert.ok(b.max[0] >= 1.94, `should end near x=2, got ${b.max[0]}`);
+  expectFinite(g);
+});
+
+test('rope sag pulls the middle below the chord', () => {
+  const straight = rope([new THREE.Vector3(0, 0, 0), new THREE.Vector3(2, 0, 0)], 0.05, { sag: 0 });
+  const hung = rope([new THREE.Vector3(0, 0, 0), new THREE.Vector3(2, 0, 0)], 0.05, { sag: 0.25 });
+  assert.ok(bounds(hung).min[1] < bounds(straight).min[1] - 0.2, 'sagged rope should hang lower');
+  expectFinite(hung);
+});
+
+test('rope carries uvs that advance along its length', () => {
+  const g = rope([new THREE.Vector3(0, 0, 0), new THREE.Vector3(1, 0, 0)], 0.05, { lay: 4 });
+  const uv = g.getAttribute('uv');
+  assert.ok(uv, 'rope needs uvs for the fibre twist');
+  let max = 0;
+  for (let i = 0; i < uv.count; i++) max = Math.max(max, uv.getY(i));
+  assert.ok(max > 1, `lay should repeat the texture, max v was ${max}`);
+});
+
+test('rope rejects a single point', () => {
+  assert.throws(() => rope([new THREE.Vector3()], 0.05), /at least two/);
+});
+
+test('ropeLashing wraps around its axis', () => {
+  const g = ropeLashing(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 1, 0), 0.1, 3);
+  const b = bounds(g);
+  assert.ok(b.max[0] > 0.05, 'lashing should extend in x');
+  assert.ok(b.max[2] > 0.05, 'lashing should extend in z');
+  expectFinite(g);
+});
+
+/* A flat 3x3 grid in the xz plane, for the panel tests. */
+function flatGrid(n = 3) {
+  const rows = [];
+  for (let i = 0; i < n; i++) {
+    const row = [];
+    for (let j = 0; j < n; j++) {
+      row.push(new THREE.Vector3(j / (n - 1), 0, i / (n - 1)));
+    }
+    rows.push(row);
+  }
+  return rows;
+}
+
+test('canvasPanel spans its grid and carries full uvs', () => {
+  const g = canvasPanel(flatGrid());
+  const b = bounds(g);
+  assert.ok(Math.abs(b.min[0]) < 1e-6 && Math.abs(b.max[0] - 1) < 1e-6);
+  const uv = g.getAttribute('uv');
+  assert.ok(uv, 'canvas needs uvs');
+  let minU = 1;
+  let maxU = 0;
+  for (let i = 0; i < uv.count; i++) {
+    minU = Math.min(minU, uv.getX(i));
+    maxU = Math.max(maxU, uv.getX(i));
+  }
+  assert.ok(Math.abs(minU) < 1e-6 && Math.abs(maxU - 1) < 1e-6, `uv u spanned ${minU}..${maxU}`);
+  expectFinite(g);
+});
+
+test('canvasPanel slack displaces the interior but pins the edges', () => {
+  const g = canvasPanel(flatGrid(5), { slack: 0.2 });
+  const p = g.getAttribute('position');
+  let interiorMoved = false;
+  for (let i = 0; i < p.count; i++) {
+    const x = p.getX(i);
+    const z = p.getZ(i);
+    const onEdge = x < 1e-6 || x > 1 - 1e-6 || z < 1e-6 || z > 1 - 1e-6;
+    if (onEdge) {
+      assert.ok(Math.abs(p.getY(i)) < 1e-6, `edge vertex moved to y=${p.getY(i)}`);
+    } else if (Math.abs(p.getY(i)) > 1e-6) {
+      interiorMoved = true;
+    }
+  }
+  assert.ok(interiorMoved, 'slack should displace interior vertices');
+});
+
+test('canvasPanel rejects a grid too small to triangulate', () => {
+  assert.throws(() => canvasPanel([[new THREE.Vector3()]]), /at least two/);
+});
+
+test('seamLines produces geometry at each requested row', () => {
+  const g = seamLines(flatGrid(5), [0.5]);
+  assert.ok(g.getAttribute('position').count > 0, 'a seam should produce vertices');
+  const b = bounds(g);
+  assert.ok(b.min[2] < 0.55 && b.max[2] > 0.45, `seam should sit near z=0.5, got ${b.min[2]}..${b.max[2]}`);
+  expectFinite(g);
+});

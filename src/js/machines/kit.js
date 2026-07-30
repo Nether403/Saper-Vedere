@@ -142,9 +142,10 @@ export function peg(radius, length) {
 
 /* ---- helpers ------------------------------------------------ */
 
-function finish(pos, idx) {
+function finish(pos, idx, uv) {
   const g = new THREE.BufferGeometry();
   g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+  if (uv) g.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
   g.setIndex(idx);
   g.computeVertexNormals();
   return g;
@@ -156,14 +157,18 @@ function finish(pos, idx) {
 export function mergeGeometries(list) {
   const pos = [];
   const nor = [];
+  const uv = [];
   const idx = [];
   let offset = 0;
+  const anyUv = list.some((g) => g.getAttribute('uv'));
   for (const g of list) {
     const p = g.getAttribute('position');
     const n = g.getAttribute('normal');
+    const t = g.getAttribute('uv');
     for (let i = 0; i < p.count; i++) {
       pos.push(p.getX(i), p.getY(i), p.getZ(i));
       nor.push(n ? n.getX(i) : 0, n ? n.getY(i) : 1, n ? n.getZ(i) : 0);
+      if (anyUv) uv.push(t ? t.getX(i) : 0, t ? t.getY(i) : 0);
     }
     const index = g.getIndex();
     if (index) {
@@ -176,6 +181,163 @@ export function mergeGeometries(list) {
   const out = new THREE.BufferGeometry();
   out.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
   out.setAttribute('normal', new THREE.Float32BufferAttribute(nor, 3));
+  if (anyUv) out.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
   out.setIndex(idx);
   return out;
+}
+
+/* ---- rope and cloth ----------------------------------------- */
+
+/* Rope, swept along a curve through the given points. A cord under
+   its own weight hangs; `sag` bows it downward at midspan. The lay
+   twist goes into the v coordinate so hemp fibre spirals correctly. */
+export function rope(points, radius, { sag = 0, segments = 24, radial = 6, lay = 8 } = {}) {
+  if (!Array.isArray(points) || points.length < 2) {
+    throw new Error('rope needs at least two points');
+  }
+
+  let control = points;
+  if (sag > 0) {
+    const first = points[0];
+    const last = points[points.length - 1];
+    const chord = first.distanceTo(last);
+    // A bare chord has no midspan node to bow, so give it one.
+    const source = points.length > 2
+      ? points
+      : [first, first.clone().lerp(last, 0.5), last];
+    control = source.map((p, i) => {
+      const t = source.length === 1 ? 0 : i / (source.length - 1);
+      const bow = Math.sin(t * Math.PI) * chord * sag;
+      return new THREE.Vector3(p.x, p.y - bow, p.z);
+    });
+  }
+
+  const curve = new THREE.CatmullRomCurve3(control, false, 'catmullrom', 0.5);
+  const frames = curve.computeFrenetFrames(segments, false);
+  const pos = [];
+  const uv = [];
+  const idx = [];
+
+  for (let i = 0; i <= segments; i++) {
+    const t = i / segments;
+    const centre = curve.getPointAt(t);
+    const normal = frames.normals[i];
+    const binormal = frames.binormals[i];
+    for (let j = 0; j <= radial; j++) {
+      const a = (j / radial) * Math.PI * 2;
+      const sin = Math.sin(a);
+      const cos = Math.cos(a);
+      pos.push(
+        centre.x + radius * (cos * normal.x + sin * binormal.x),
+        centre.y + radius * (cos * normal.y + sin * binormal.y),
+        centre.z + radius * (cos * normal.z + sin * binormal.z)
+      );
+      uv.push(j / radial, t * lay);
+    }
+  }
+
+  for (let i = 0; i < segments; i++) {
+    for (let j = 0; j < radial; j++) {
+      const a = i * (radial + 1) + j;
+      const b = a + radial + 1;
+      idx.push(a, b, a + 1, b, b + 1, a + 1);
+    }
+  }
+
+  return finish(pos, idx, uv);
+}
+
+/* A short helix wound over a joint, which is how a rib is actually
+   fixed to a rim when there is no iron to spare. */
+export function ropeLashing(at, dir, radius, turns) {
+  const axis = dir.clone().normalize();
+  const side = Math.abs(axis.y) > 0.9
+    ? new THREE.Vector3(1, 0, 0)
+    : new THREE.Vector3(0, 1, 0);
+  const u = new THREE.Vector3().crossVectors(axis, side).normalize();
+  const v = new THREE.Vector3().crossVectors(axis, u).normalize();
+
+  const gauge = radius * 0.22;
+  const span = gauge * 2.2 * turns;
+  const steps = Math.max(8, Math.round(turns * 10));
+  const pts = [];
+  for (let i = 0; i <= steps; i++) {
+    const t = i / steps;
+    const a = t * Math.PI * 2 * turns;
+    const along = (t - 0.5) * span;
+    pts.push(
+      at.clone()
+        .addScaledVector(axis, along)
+        .addScaledVector(u, Math.cos(a) * radius)
+        .addScaledVector(v, Math.sin(a) * radius)
+    );
+  }
+  return rope(pts, gauge, { segments: steps * 2, radial: 5, lay: turns * 3 });
+}
+
+/* Stretched cloth over a frame. The caller positions the grid; this
+   adds the slack that makes it read as cloth rather than as sheet
+   metal, and the uvs the weave needs. Edges stay pinned — that is
+   where the cloth is roped to the frame. */
+export function canvasPanel(grid, { slack = 0, seams = 0 } = {}) {
+  const rows = grid.length;
+  const cols = rows > 0 ? grid[0].length : 0;
+  if (rows < 2 || cols < 2) {
+    throw new Error('canvasPanel needs a grid of at least two rows and two columns');
+  }
+
+  const pos = [];
+  const uv = [];
+  const idx = [];
+
+  for (let i = 0; i < rows; i++) {
+    for (let j = 0; j < cols; j++) {
+      const p = grid[i][j].clone();
+      if (slack > 0 && i > 0 && i < rows - 1 && j > 0 && j < cols - 1) {
+        // Sag toward the surface normal, strongest at the centre of a bay.
+        const n = gridNormal(grid, i, j);
+        const fade = Math.sin((i / (rows - 1)) * Math.PI) * Math.sin((j / (cols - 1)) * Math.PI);
+        p.addScaledVector(n, -slack * fade);
+      }
+      pos.push(p.x, p.y, p.z);
+      uv.push(j / (cols - 1), i / (rows - 1));
+    }
+  }
+
+  for (let i = 0; i < rows - 1; i++) {
+    for (let j = 0; j < cols - 1; j++) {
+      const a = i * cols + j;
+      const b = a + cols;
+      idx.push(a, b, a + 1, b, b + 1, a + 1);
+    }
+  }
+
+  const g = finish(pos, idx, uv);
+  if (seams > 0) g.userData.seams = seams;
+  return g;
+}
+
+/* The welt a seam makes where two widths of cloth are stitched. */
+export function seamLines(grid, at) {
+  const rows = grid.length;
+  const cols = rows > 0 ? grid[0].length : 0;
+  if (rows < 2 || cols < 2) {
+    throw new Error('seamLines needs a grid of at least two rows and two columns');
+  }
+  const parts = [];
+  for (const t of at) {
+    const row = Math.min(rows - 1, Math.max(0, Math.round(t * (rows - 1))));
+    const pts = grid[row].map((p) => p.clone());
+    parts.push(rope(pts, 0.008, { segments: cols * 2, radial: 4, lay: cols * 2 }));
+  }
+  return mergeGeometries(parts);
+}
+
+/* The surface normal at one interior grid node, from its neighbours. */
+function gridNormal(grid, i, j) {
+  const along = grid[i][j + 1].clone().sub(grid[i][j - 1]);
+  const across = grid[i + 1][j].clone().sub(grid[i - 1][j]);
+  const n = new THREE.Vector3().crossVectors(along, across);
+  if (n.lengthSq() < 1e-12) return new THREE.Vector3(0, 1, 0);
+  return n.normalize();
 }
