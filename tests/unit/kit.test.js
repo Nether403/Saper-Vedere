@@ -180,6 +180,13 @@ test('canvasPanel spans its grid and carries full uvs', () => {
     maxU = Math.max(maxU, uv.getX(i));
   }
   assert.ok(Math.abs(minU) < 1e-6 && Math.abs(maxU - 1) < 1e-6, `uv u spanned ${minU}..${maxU}`);
+  let minV = 1;
+  let maxV = 0;
+  for (let i = 0; i < uv.count; i++) {
+    minV = Math.min(minV, uv.getY(i));
+    maxV = Math.max(maxV, uv.getY(i));
+  }
+  assert.ok(Math.abs(minV) < 1e-6 && Math.abs(maxV - 1) < 1e-6, `uv v spanned ${minV}..${maxV}`);
   expectFinite(g);
 });
 
@@ -192,12 +199,14 @@ test('canvasPanel slack displaces the interior but pins the edges', () => {
     const z = p.getZ(i);
     const onEdge = x < 1e-6 || x > 1 - 1e-6 || z < 1e-6 || z > 1 - 1e-6;
     if (onEdge) {
-      assert.ok(Math.abs(p.getY(i)) < 1e-6, `edge vertex moved to y=${p.getY(i)}`);
-    } else if (Math.abs(p.getY(i)) > 1e-6) {
-      interiorMoved = true;
+      assert.ok(p.getY(i) === 0, `edge vertex moved to y=${p.getY(i)}`);
+    } else {
+      // Cloth hangs. A displaced interior vertex must go down, never up.
+      assert.ok(p.getY(i) < 1e-6, `interior vertex rose to y=${p.getY(i)}`);
+      if (p.getY(i) < -1e-6) interiorMoved = true;
     }
   }
-  assert.ok(interiorMoved, 'slack should displace interior vertices');
+  assert.ok(interiorMoved, 'slack should displace interior vertices downward');
 });
 
 test('canvasPanel rejects a grid too small to triangulate', () => {

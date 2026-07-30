@@ -152,8 +152,10 @@ function finish(pos, idx, uv) {
 }
 
 /* A local merge, so the kit does not depend on the addons build.
-   Every geometry here is non-indexed-safe, position+normal only,
-   which is all the machines need. */
+   Handles non-indexed inputs, and — unlike the addon version, which
+   demands identical attribute sets — tolerates a mix of UV-bearing
+   and UV-less geometry. If any input carries UVs the output does
+   too, with (0, 0) filled in for the members that had none. */
 export function mergeGeometries(list) {
   const pos = [];
   const nor = [];
@@ -296,8 +298,11 @@ export function canvasPanel(grid, { slack = 0, seams = 0 } = {}) {
       if (slack > 0 && i > 0 && i < rows - 1 && j > 0 && j < cols - 1) {
         // Sag toward the surface normal, strongest at the centre of a bay.
         const n = gridNormal(grid, i, j);
+        // Cloth hangs: bias the normal downward so slack sags under its
+        // own weight whichever way the caller wound the grid.
+        if (n.y > 0) n.negate();
         const fade = Math.sin((i / (rows - 1)) * Math.PI) * Math.sin((j / (cols - 1)) * Math.PI);
-        p.addScaledVector(n, -slack * fade);
+        p.addScaledVector(n, slack * fade);
       }
       pos.push(p.x, p.y, p.z);
       uv.push(j / (cols - 1), i / (rows - 1));
@@ -333,8 +338,15 @@ export function seamLines(grid, at) {
   return mergeGeometries(parts);
 }
 
-/* The surface normal at one interior grid node, from its neighbours. */
+/* The surface normal at one interior grid node, from its neighbours.
+   Needs a neighbour on all four sides, so a boundary node has no
+   normal to give; it falls back to up, as the degenerate cross does. */
 function gridNormal(grid, i, j) {
+  const rows = grid.length;
+  const cols = rows > 0 ? grid[0].length : 0;
+  if (i < 1 || i > rows - 2 || j < 1 || j > cols - 2) {
+    return new THREE.Vector3(0, 1, 0);
+  }
   const along = grid[i][j + 1].clone().sub(grid[i][j - 1]);
   const across = grid[i + 1][j].clone().sub(grid[i - 1][j]);
   const n = new THREE.Vector3().crossVectors(along, across);
