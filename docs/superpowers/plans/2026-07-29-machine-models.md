@@ -2140,7 +2140,7 @@ const R = 2.0;      // outer radius of the sail
 const r0 = 0.16;    // radius at the mast
 const H = 2.3;      // rise of one full turn
 const TURNS = 1.05;
-const U = 96, V = 7;
+const U = 400, V = 56;
 const RIBS = 16;
 const bR = 1.15;    // platform radius
 
@@ -2183,7 +2183,7 @@ export function buildScrew() {
 
   // The mast: turned stock, stepped where it passes the bearing.
   screw.add(mesh(
-    place(spar(H + 0.92, r0 * 0.9, r0 * 0.55, { swell: 0.08, segments: 16 }),
+    place(spar(H + 0.92, r0 * 0.9, r0 * 0.55, { swell: 0.08, segments: 48, radial: 32 }),
       new THREE.Vector3(0, -0.5, 0), new THREE.Vector3(0, H + 0.42, 0)),
     MATERIALS.oak
   ));
@@ -2224,15 +2224,15 @@ export function buildScrew() {
 
   // The rim rope, and the hem it is sewn into.
   const rimPts = [];
-  for (let i = 0; i <= 48; i++) rimPts.push(at(i / 48, 1));
-  screw.add(mesh(rope(rimPts, 0.022, { segments: 160, radial: 6, lay: 40 }), MATERIALS.hemp));
+  for (let i = 0; i <= 96; i++) rimPts.push(at(i / 96, 1));
+  screw.add(mesh(rope(rimPts, 0.022, { segments: 480, radial: 12, lay: 40 }), MATERIALS.hemp));
 
   // Stays from the mast head, hanging under their own weight.
   const head = new THREE.Vector3(0, H + 0.42, 0);
   for (let i = 0; i < 8; i++) {
     const foot = at(i / 8, 1);
     screw.add(mesh(
-      rope([head.clone(), head.clone().lerp(foot, 0.5), foot], 0.011, { sag: 0.04, segments: 20, radial: 5, lay: 24 }),
+      rope([head.clone(), head.clone().lerp(foot, 0.5), foot], 0.011, { sag: 0.04, segments: 48, radial: 10, lay: 24 }),
       MATERIALS.hemp,
       { cast: false }
     ));
@@ -2273,14 +2273,14 @@ export function buildScrew() {
     const from = new THREE.Vector3(0, 0.22, 0);
     const to = new THREE.Vector3(Math.cos(a) * bR * 1.25, 0.22, Math.sin(a) * bR * 1.25);
     base.add(mesh(
-      place(spar(from.distanceTo(to), 0.045, 0.032, { swell: 0.05 }), from, to),
+      place(spar(from.distanceTo(to), 0.045, 0.032, { swell: 0.05, segments: 32, radial: 24 }), from, to),
       MATERIALS.oak
     ));
   }
 
   // The iron collar the bars socket into.
   base.add(mesh(
-    place(spar(0.3, 0.13, 0.13, { swell: 0 }), new THREE.Vector3(0, 0.08, 0), new THREE.Vector3(0, 0.38, 0)),
+    place(spar(0.3, 0.13, 0.13, { swell: 0, segments: 24, radial: 32 }), new THREE.Vector3(0, 0.08, 0), new THREE.Vector3(0, 0.38, 0)),
     MATERIALS.iron
   ));
 
