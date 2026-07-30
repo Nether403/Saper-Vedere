@@ -12,37 +12,44 @@ import * as THREE from 'three';
 
 /* A squared timber. Hand-hewn stock is never parallel-sided, so
    the +z end may taper; the arrises are chamfered, which is what
-   lets an edge catch the key light instead of vanishing. */
-export function beam(length, width, depth, { taper = 0, chamfer = 0.012 } = {}) {
+   lets an edge catch the key light instead of vanishing.
+
+   `segments` cuts intermediate rings along the run, so a long beam
+   bends light down its length and carries its taper smoothly instead
+   of in one straight lift. `radial` is the number of faces around the
+   girth; the eight octagon corners are always kept, so the four
+   chamfers survive at any setting, and the surplus faces are spread
+   by edge length. The defaults, 1 and 8, are the single ring pair and
+   the plain octagon this cut has always produced. */
+export function beam(length, width, depth, { taper = 0, chamfer = 0.012, segments = 1, radial = 8 } = {}) {
   const hw = width / 2;
   const hd = depth / 2;
   const hl = length / 2;
   const c = Math.min(chamfer, hw * 0.6, hd * 0.6);
+  const segs = Math.max(1, Math.round(segments));
 
-  // Cross-section as an octagon: four faces with the corners cut.
-  const section = [
-    [-hw + c, -hd], [hw - c, -hd],
-    [hw, -hd + c], [hw, hd - c],
-    [hw - c, hd], [-hw + c, hd],
-    [-hw, hd - c], [-hw, -hd + c],
-  ];
-
-  const ends = [
-    { z: -hl, k: 1 },
-    { z: hl, k: 1 - taper },
-  ];
+  const section = beamSection(hw, hd, c, Math.max(8, Math.round(radial)));
+  const n = section.length;
 
   const pos = [];
   const idx = [];
-  for (const { z, k } of ends) {
+  for (let s = 0; s <= segs; s++) {
+    const t = s / segs;
+    // The far ring lands on hl exactly, not on hl plus a rounding.
+    const z = s === segs ? hl : -hl + length * t;
+    const k = 1 - taper * t;
     for (const [x, y] of section) pos.push(x * k, y * k, z);
   }
-  const n = section.length;
-  for (let i = 0; i < n; i++) {
-    const j = (i + 1) % n;
-    idx.push(i, n + i, j, n + i, n + j, j);
+  for (let s = 0; s < segs; s++) {
+    const a0 = s * n;
+    const b0 = a0 + n;
+    for (let i = 0; i < n; i++) {
+      const j = (i + 1) % n;
+      idx.push(a0 + i, b0 + i, a0 + j, b0 + i, b0 + j, a0 + j);
+    }
   }
   // Caps, as fans from the section centre.
+  const last = segs * n;
   const capA = pos.length / 3;
   pos.push(0, 0, -hl);
   const capB = pos.length / 3;
@@ -50,10 +57,55 @@ export function beam(length, width, depth, { taper = 0, chamfer = 0.012 } = {}) 
   for (let i = 0; i < n; i++) {
     const j = (i + 1) % n;
     idx.push(capA, j, i);
-    idx.push(capB, n + i, n + j);
+    idx.push(capB, last + i, last + j);
   }
 
   return finish(pos, idx);
+}
+
+/* The cross-section of a beam: an octagon, four faces with the corners
+   cut, optionally with more faces around. One face per octagon edge is
+   the floor — that is what holds the chamfers in place — and anything
+   asked for beyond eight is handed out in proportion to edge length,
+   so the facets come out near-equal instead of crowding the little
+   corner cuts. Winding and start point match the bare octagon, so
+   `radial: 8` returns exactly the eight points it always did. */
+function beamSection(hw, hd, c, radial) {
+  const corners = [
+    [-hw + c, -hd], [hw - c, -hd],
+    [hw, -hd + c], [hw, hd - c],
+    [hw - c, hd], [-hw + c, hd],
+    [-hw, hd - c], [-hw, -hd + c],
+  ];
+  const edges = corners.length;
+  if (radial <= edges) return corners;
+
+  const span = corners.map((p, i) => {
+    const q = corners[(i + 1) % edges];
+    return Math.hypot(q[0] - p[0], q[1] - p[1]);
+  });
+  const total = span.reduce((a, b) => a + b, 0) || 1;
+  const spare = radial - edges;
+  const share = span.map((l) => (spare * l) / total);
+  const extra = share.map(Math.floor);
+  let left = spare - extra.reduce((a, b) => a + b, 0);
+  // Largest remainder takes the leftovers, so the count comes out exact.
+  const order = share
+    .map((_, i) => i)
+    .sort((a, b) => (share[b] - extra[b]) - (share[a] - extra[a]));
+  for (let k = 0; left > 0; k++, left--) extra[order[k % edges]]++;
+
+  const out = [];
+  for (let i = 0; i < edges; i++) {
+    const p = corners[i];
+    const q = corners[(i + 1) % edges];
+    const steps = 1 + extra[i];
+    for (let s = 0; s < steps; s++) {
+      const t = s / steps;
+      out.push([p[0] + (q[0] - p[0]) * t, p[1] + (q[1] - p[1]) * t]);
+    }
+  }
+  return out;
 }
 
 /* Lathed round stock: masts, axles, capstan bars. A turned spar
@@ -131,10 +183,16 @@ export function ironStrap(path, width, thickness) {
 }
 
 /* A pin with a domed head standing proud of the surface. The
-   single strongest cue that a thing was built by hand. */
-export function peg(radius, length) {
-  const shank = spar(length, radius, radius, { swell: 0, radial: 8, segments: 2 });
-  const head = new THREE.SphereGeometry(radius * 1.7, 8, 5, 0, Math.PI * 2, 0, Math.PI * 0.55);
+   single strongest cue that a thing was built by hand — worth real
+   geometry where the camera comes close.
+
+   `segments` and `radial` go to the shank, exactly as on `spar`;
+   `radial` also sets the head's meridians, so shank and dome stay
+   in register. `headRings` is the dome's own parallels. The defaults,
+   2, 8 and 5, are the numbers this pin was always turned to. */
+export function peg(radius, length, { segments = 2, radial = 8, headRings = 5 } = {}) {
+  const shank = spar(length, radius, radius, { swell: 0, radial, segments });
+  const head = new THREE.SphereGeometry(radius * 1.7, radial, headRings, 0, Math.PI * 2, 0, Math.PI * 0.55);
   head.rotateX(-Math.PI / 2);
   head.translate(0, 0, length / 2);
   return mergeGeometries([shank, head]);
@@ -359,10 +417,36 @@ function gridNormal(grid, i, j) {
 /* A toothed wheel with a real tooth profile, lying in the xz plane
    and extruded along y. The cart folio shows trapezoidal teeth with
    worn tips, which is what the four-point profile below draws. */
-export function solidGear(radius, teeth, thickness, { depth = 0.08, hub = 0.18, spokes = 0 } = {}) {
+export function solidGear(radius, teeth, thickness, {
+  depth = 0.08,
+  hub = 0.18,
+  spokes = 0,
+  /* Rings across the thickness, for the rim wall and the hub wall
+     alike: a tall rim gets a gradient down its face instead of one
+     flat band. The tooth profile is untouched by this — the same
+     four stations per tooth, only carried on more rings. */
+  segments = 1,
+  /* Faces around the hub cylinder. Was hard-coded at 20. */
+  hubSegments = 20,
+  /* Faces around the annular web. Was hard-coded at 24. */
+  webSegments = 24,
+  /* Radial bands across the web, hub edge to root. One band is the
+     single quad ring the web has always been. */
+  webRings = 1,
+  /* Subdivision handed to each spoke bar, as on `beam`. */
+  spokeSegments = 1,
+  spokeRadial = 8,
+} = {}) {
   const hy = thickness / 2;
   const root = radius - depth;
   const hubR = radius * hub;
+  const ys = Math.max(1, Math.round(segments));
+  const hubSegs = Math.max(3, Math.round(hubSegments));
+  const webSegs = Math.max(3, Math.round(webSegments));
+  const rings = Math.max(1, Math.round(webRings));
+  // The levels across the thickness, shared by rim and hub.
+  const levels = [];
+  for (let k = 0; k <= ys; k++) levels.push(k === ys ? hy : -hy + thickness * (k / ys));
 
   // Each tooth contributes four rim stations: root, flank, flank, root.
   const rim = [];
@@ -380,34 +464,38 @@ export function solidGear(radius, teeth, thickness, { depth = 0.08, hub = 0.18, 
   const pos = [];
   const idx = [];
 
-  // Rim: an outer wall, plus a top and bottom face reaching inward.
+  // Rim: an outer wall carried on one ring per level of the thickness.
+  const stride = levels.length;
   const ringStart = pos.length / 3;
   for (const { a, r } of rim) {
     const c = Math.cos(a) * r;
     const s = Math.sin(a) * r;
-    pos.push(c, -hy, s, c, hy, s);
+    for (const y of levels) pos.push(c, y, s);
   }
   const n = rim.length;
   for (let i = 0; i < n; i++) {
     const j = (i + 1) % n;
-    const a = ringStart + i * 2;
-    const b = ringStart + j * 2;
-    idx.push(a, a + 1, b, a + 1, b + 1, b);
+    for (let k = 0; k < ys; k++) {
+      const a = ringStart + i * stride + k;
+      const b = ringStart + j * stride + k;
+      idx.push(a, a + 1, b, a + 1, b + 1, b);
+    }
   }
 
   // Hub, as a short cylinder wall.
-  const hubSegs = 20;
   const hubStart = pos.length / 3;
   for (let i = 0; i <= hubSegs; i++) {
     const a = (i / hubSegs) * Math.PI * 2;
     const c = Math.cos(a) * hubR;
     const s = Math.sin(a) * hubR;
-    pos.push(c, -hy, s, c, hy, s);
+    for (const y of levels) pos.push(c, y, s);
   }
   for (let i = 0; i < hubSegs; i++) {
-    const a = hubStart + i * 2;
-    const b = a + 2;
-    idx.push(a, b, a + 1, b, b + 1, a + 1);
+    for (let k = 0; k < ys; k++) {
+      const a = hubStart + i * stride + k;
+      const b = a + stride;
+      idx.push(a, b, a + 1, b, b + 1, a + 1);
+    }
   }
 
   const parts = [finish(pos, idx)];
@@ -416,7 +504,10 @@ export function solidGear(radius, teeth, thickness, { depth = 0.08, hub = 0.18, 
     // Bars from hub to root, each a flat beam lying in the plane.
     for (let i = 0; i < spokes; i++) {
       const a = (i / spokes) * Math.PI * 2;
-      const bar = beam(root - hubR, thickness * 0.5, thickness * 0.8);
+      const bar = beam(root - hubR, thickness * 0.5, thickness * 0.8, {
+        segments: spokeSegments,
+        radial: spokeRadial,
+      });
       bar.rotateY(Math.PI / 2 - a);
       const mid = (hubR + root) / 2;
       bar.translate(Math.cos(a) * mid, 0, Math.sin(a) * mid);
@@ -425,23 +516,31 @@ export function solidGear(radius, teeth, thickness, { depth = 0.08, hub = 0.18, 
     // Close the rim and hub with annular faces only where a spoke sits,
     // which the bars themselves already do; nothing more is needed.
   } else {
-    // A solid web: two annular discs between hub and root.
-    const webSegs = 24;
+    // A solid web: two annular discs between hub and root, crossed by
+    // `rings` bands so the disc can shade across its width rather than
+    // taking one flat tone from hub edge to root.
+    const radii = [];
+    for (let k = 0; k <= rings; k++) {
+      radii.push(k === rings ? root : hubR + (root - hubR) * (k / rings));
+    }
+    const wstride = radii.length * 2;
     const wpos = [];
     const widx = [];
     for (let i = 0; i <= webSegs; i++) {
       const a = (i / webSegs) * Math.PI * 2;
       const c = Math.cos(a);
       const s = Math.sin(a);
-      for (const r of [hubR, root]) for (const y of [-hy, hy]) wpos.push(c * r, y, s * r);
+      for (const r of radii) for (const y of [-hy, hy]) wpos.push(c * r, y, s * r);
     }
     for (let i = 0; i < webSegs; i++) {
-      const a = i * 4;
-      const b = a + 4;
-      // bottom face
-      widx.push(a, a + 2, b, a + 2, b + 2, b);
-      // top face
-      widx.push(a + 1, b + 1, a + 3, b + 1, b + 3, a + 3);
+      for (let k = 0; k < rings; k++) {
+        const a = i * wstride + k * 2;
+        const b = a + wstride;
+        // bottom face
+        widx.push(a, a + 2, b, a + 2, b + 2, b);
+        // top face
+        widx.push(a + 1, b + 1, a + 3, b + 1, b + 3, a + 3);
+      }
     }
     parts.push(finish(wpos, widx));
   }

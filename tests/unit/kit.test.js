@@ -374,6 +374,255 @@ test('solidGear spokes run radially and bridge hub to root', () => {
   expectFinite(g);
 });
 
+/* ---- subdivision, and the promise that defaults never move -----
+   beam, peg and solidGear grew density options so the machines can
+   spend their triangle budget where it shows. Every one of them is
+   opt-in: a caller that passes nothing must get byte-identical
+   geometry, because the aerial screw is already built and its
+   triangle count is asserted elsewhere. The frozen signatures below
+   are the guard. If one of them moves, a default moved with it. */
+
+/* A hash over the raw float bits of the positions and over the whole
+   index buffer. Catches a moved vertex, a reordered vertex and a
+   reordered triangle alike, which a bare count cannot. */
+function signature(geometry) {
+  const p = geometry.getAttribute('position').array;
+  const bits = new Uint32Array(p.buffer, p.byteOffset, p.length);
+  let h = 2166136261;
+  for (let i = 0; i < bits.length; i++) {
+    h ^= bits[i];
+    h = Math.imul(h, 16777619);
+  }
+  const index = geometry.getIndex();
+  for (let i = 0; i < index.count; i++) {
+    h ^= index.getX(i) + 1;
+    h = Math.imul(h, 16777619);
+  }
+  return {
+    vertices: geometry.getAttribute('position').count,
+    triangles: index.count / 3,
+    checksum: h >>> 0,
+  };
+}
+
+/* Triangles of zero area: invisible, but they poison normals. */
+function degenerateCount(geometry) {
+  const p = geometry.getAttribute('position');
+  const index = geometry.getIndex();
+  const a = new THREE.Vector3();
+  const b = new THREE.Vector3();
+  const c = new THREE.Vector3();
+  const n = new THREE.Vector3();
+  let bad = 0;
+  for (let i = 0; i < index.count; i += 3) {
+    a.fromBufferAttribute(p, index.getX(i));
+    b.fromBufferAttribute(p, index.getX(i + 1));
+    c.fromBufferAttribute(p, index.getX(i + 2));
+    n.crossVectors(b.clone().sub(a), c.clone().sub(a));
+    if (n.length() < 1e-12) bad++;
+  }
+  return bad;
+}
+
+test('beam at its defaults is byte-identical to the stock it always cut', () => {
+  assert.deepEqual(signature(beam(2, 0.2, 0.3)), {
+    vertices: 18, triangles: 32, checksum: 3255006845,
+  });
+  assert.deepEqual(signature(beam(2, 0.2, 0.2, { taper: 0.5 })), {
+    vertices: 18, triangles: 32, checksum: 3109966701,
+  });
+  assert.deepEqual(signature(beam(1, 0.4, 0.4, { chamfer: 0.05 })), {
+    vertices: 18, triangles: 32, checksum: 875493805,
+  });
+  // The screw's rib stock, verbatim from screw.js.
+  assert.deepEqual(signature(beam(0.92, 0.055, 0.11, { taper: 0.45 })), {
+    vertices: 18, triangles: 32, checksum: 3127595407,
+  });
+});
+
+test('beam at its defaults puts every vertex exactly where it did', () => {
+  // hw = hd = 0.2, hl = 0.5, chamfer 0.05: the octagon, both rings,
+  // then the two cap centres. Round numbers, so worth spelling out.
+  const g = beam(1, 0.4, 0.4, { chamfer: 0.05 });
+  const section = [
+    [-0.15, -0.2], [0.15, -0.2], [0.2, -0.15], [0.2, 0.15],
+    [0.15, 0.2], [-0.15, 0.2], [-0.2, 0.15], [-0.2, -0.15],
+  ];
+  const want = [];
+  for (const z of [-0.5, 0.5]) for (const [x, y] of section) want.push(x, y, z);
+  want.push(0, 0, -0.5, 0, 0, 0.5);
+  const p = g.getAttribute('position');
+  assert.equal(p.count * 3, want.length);
+  for (let i = 0; i < want.length; i++) {
+    assert.ok(Math.abs(p.array[i] - want[i]) < 1e-7, `position[${i}] was ${p.array[i]}, wanted ${want[i]}`);
+  }
+});
+
+test('peg at its defaults is byte-identical to the pin it always turned', () => {
+  assert.deepEqual(signature(peg(0.02, 0.1)), {
+    vertices: 81, triangles: 104, checksum: 1982890379,
+  });
+  // The screw's platform pin, verbatim from screw.js.
+  assert.deepEqual(signature(peg(0.014, 0.075)), {
+    vertices: 81, triangles: 104, checksum: 600230880,
+  });
+});
+
+test('solidGear at its defaults is byte-identical to the wheel it always cut', () => {
+  assert.deepEqual(signature(solidGear(1, 34, 0.07, { spokes: 8 })), {
+    vertices: 458, triangles: 568, checksum: 2974417954,
+  });
+  assert.deepEqual(signature(solidGear(1, 34, 0.07)), {
+    vertices: 414, triangles: 408, checksum: 1900606521,
+  });
+  assert.deepEqual(signature(solidGear(1, 12, 0.1, { depth: 0.15 })), {
+    vertices: 238, triangles: 232, checksum: 2758120927,
+  });
+  assert.deepEqual(signature(solidGear(1, 12, 0.1, { spokes: 6 })), {
+    vertices: 246, triangles: 328, checksum: 3911263198,
+  });
+  assert.deepEqual(signature(solidGear(0.6, 20, 0.05, { hub: 0.3 })), {
+    vertices: 302, triangles: 296, checksum: 4249837463,
+  });
+});
+
+test('beam subdivides along its length without moving its ends', () => {
+  const plain = signature(beam(2, 0.2, 0.3));
+  const dense = signature(beam(2, 0.2, 0.3, { segments: 8 }));
+  assert.ok(dense.triangles > plain.triangles, `${dense.triangles} should exceed ${plain.triangles}`);
+  const g = beam(2, 0.2, 0.3, { segments: 8 });
+  const b = bounds(g);
+  assert.ok(Math.abs(b.min[2] - -1) < 1e-6, `min z was ${b.min[2]}`);
+  assert.ok(Math.abs(b.max[2] - 1) < 1e-6, `max z was ${b.max[2]}`);
+  assert.equal(degenerateCount(g), 0, 'a subdivided beam should have no zero-area triangles');
+  expectFinite(g);
+});
+
+test('beam carries its taper smoothly through the intermediate rings', () => {
+  // Half-width 0.1 at the butt, half of that at the tip: the ring at
+  // midspan must sit halfway between, which one length segment cannot do.
+  const g = beam(2, 0.2, 0.2, { taper: 0.5, segments: 4 });
+  const p = g.getAttribute('position');
+  let mid = 0;
+  for (let i = 0; i < p.count; i++) {
+    if (Math.abs(p.getZ(i)) < 1e-6) mid = Math.max(mid, Math.abs(p.getX(i)));
+  }
+  assert.ok(Math.abs(mid - 0.075) < 1e-6, `midspan half-width was ${mid}, wanted 0.075`);
+});
+
+test('beam subdivides around its girth and keeps the arrises chamfered', () => {
+  const plain = signature(beam(1, 0.4, 0.4, { chamfer: 0.05 }));
+  const dense = signature(beam(1, 0.4, 0.4, { chamfer: 0.05, radial: 32 }));
+  assert.ok(dense.triangles > plain.triangles, `${dense.triangles} should exceed ${plain.triangles}`);
+  const g = beam(1, 0.4, 0.4, { chamfer: 0.05, radial: 32 });
+  const p = g.getAttribute('position');
+  for (let i = 0; i < p.count; i++) {
+    const atX = Math.abs(Math.abs(p.getX(i)) - 0.2) < 1e-6;
+    const atY = Math.abs(Math.abs(p.getY(i)) - 0.2) < 1e-6;
+    assert.ok(!(atX && atY), 'a vertex sits on a sharp arris');
+  }
+  const b = bounds(g);
+  assert.ok(Math.abs(b.max[0] - 0.2) < 1e-6, `max x was ${b.max[0]}`);
+  assert.ok(Math.abs(b.max[1] - 0.2) < 1e-6, `max y was ${b.max[1]}`);
+  assert.equal(degenerateCount(g), 0);
+  expectFinite(g);
+});
+
+test('beam stays sound at the density the cart will ask for', () => {
+  const g = beam(1.4, 0.09, 0.12, { taper: 0.2, segments: 10, radial: 24 });
+  assert.ok(signature(g).triangles > 400, `only ${signature(g).triangles} triangles`);
+  const b = bounds(g);
+  assert.ok(Math.abs(b.min[2] - -0.7) < 1e-6 && Math.abs(b.max[2] - 0.7) < 1e-6);
+  assert.equal(degenerateCount(g), 0);
+  expectFinite(g);
+});
+
+test('peg subdivides shank and head, and the head stays proud', () => {
+  const plain = signature(peg(0.02, 0.1));
+  const dense = signature(peg(0.02, 0.1, { segments: 6, radial: 24, headRings: 12 }));
+  assert.ok(dense.triangles > plain.triangles, `${dense.triangles} should exceed ${plain.triangles}`);
+  const g = peg(0.02, 0.1, { segments: 6, radial: 24, headRings: 12 });
+  const p = g.getAttribute('position');
+  let head = 0;
+  let shank = 0;
+  for (let i = 0; i < p.count; i++) {
+    const r = Math.hypot(p.getX(i), p.getY(i));
+    if (p.getZ(i) > 0.04) head = Math.max(head, r);
+    else shank = Math.max(shank, r);
+  }
+  assert.ok(head > shank, `head ${head} should exceed shank ${shank}`);
+  // Below the joint only the shank stands, and it is still round stock
+  // of the radius asked for: subdivision must not have inflated it.
+  let bare = 0;
+  for (let i = 0; i < p.count; i++) {
+    if (p.getZ(i) < 0) bare = Math.max(bare, Math.hypot(p.getX(i), p.getY(i)));
+  }
+  assert.ok(Math.abs(bare - 0.02) < 1e-3, `shank radius was ${bare}`);
+  expectFinite(g);
+});
+
+test('peg shank and head subdivide independently', () => {
+  const base = signature(peg(0.02, 0.1)).vertices;
+  assert.ok(signature(peg(0.02, 0.1, { segments: 8 })).vertices > base, 'shank segments should add vertices');
+  assert.ok(signature(peg(0.02, 0.1, { radial: 20 })).vertices > base, 'radial should add vertices');
+  assert.ok(signature(peg(0.02, 0.1, { headRings: 14 })).vertices > base, 'headRings should add vertices');
+});
+
+test('solidGear subdivides its thickness, hub and web without touching the teeth', () => {
+  const plain = signature(solidGear(1, 34, 0.07));
+  const thick = signature(solidGear(1, 34, 0.07, { segments: 4 }));
+  const hubbed = signature(solidGear(1, 34, 0.07, { hubSegments: 64 }));
+  const webbed = signature(solidGear(1, 34, 0.07, { webSegments: 72 }));
+  const ringed = signature(solidGear(1, 34, 0.07, { webRings: 5 }));
+  assert.ok(thick.triangles > plain.triangles, `segments: ${thick.triangles} vs ${plain.triangles}`);
+  assert.ok(hubbed.triangles > plain.triangles, `hubSegments: ${hubbed.triangles} vs ${plain.triangles}`);
+  assert.ok(webbed.triangles > plain.triangles, `webSegments: ${webbed.triangles} vs ${plain.triangles}`);
+  assert.ok(ringed.triangles > plain.triangles, `webRings: ${ringed.triangles} vs ${plain.triangles}`);
+});
+
+test('a dense solidGear keeps its tooth profile, its flats and its web', () => {
+  const g = solidGear(1, 34, 0.07, { segments: 4, hubSegments: 64, webSegments: 72, webRings: 4 });
+  const b = bounds(g);
+  assert.ok(Math.abs(b.min[1] - -0.035) < 1e-6, `min y was ${b.min[1]}`);
+  assert.ok(Math.abs(b.max[1] - 0.035) < 1e-6, `max y was ${b.max[1]}`);
+
+  const p = g.getAttribute('position');
+  let outer = 0;
+  for (let i = 0; i < p.count; i++) outer = Math.max(outer, Math.hypot(p.getX(i), p.getZ(i)));
+  assert.ok(Math.abs(outer - 1) < 1e-3, `tooth tip radius was ${outer}`);
+
+  // Both flats still close, and still look outward.
+  const root = 1 - 0.08;
+  const hubR = 0.18;
+  const ideal = Math.PI * (root ** 2 - hubR ** 2);
+  let up = 0;
+  let down = 0;
+  for (const t of triangles(g)) {
+    if (t.ny > 0.9) up += t.area;
+    else if (t.ny < -0.9) down += t.area;
+  }
+  assert.ok(Math.abs(down - ideal) < ideal * 0.05, `-y web area was ${down}, wanted ~${ideal}`);
+  assert.ok(Math.abs(up - ideal) < ideal * 0.05, `+y web area was ${up}, wanted ~${ideal}`);
+  assert.equal(degenerateCount(g), 0);
+  expectFinite(g);
+});
+
+test('a dense spoked solidGear stays the open shell it was ruled to be', () => {
+  const opts = { spokes: 8, segments: 4, hubSegments: 48 };
+  const spoked = solidGear(1, 34, 0.07, opts);
+  const web = solidGear(1, 34, 0.07, { segments: 4, hubSegments: 48 });
+  assert.ok(spoked.getIndex().count !== web.getIndex().count, 'spoked and webbed should differ');
+  // No annular face closes rim to hub on a spoked wheel: the only flats
+  // are the little ends of the spoke bars, far short of a full disc.
+  const root = 1 - 0.08;
+  const ideal = Math.PI * (root ** 2 - 0.18 ** 2);
+  let flat = 0;
+  for (const t of triangles(spoked)) if (Math.abs(t.ny) > 0.9) flat += t.area;
+  assert.ok(flat < ideal * 0.5, `spoked wheel grew ${flat} of flat area, near the ${ideal} of a web`);
+  assert.equal(degenerateCount(spoked), 0);
+  expectFinite(spoked);
+});
+
 test('line primitives still build', () => {
   const m = lineMat();
   const l = polyline([new THREE.Vector3(0, 0, 0), new THREE.Vector3(1, 0, 0)], m);
