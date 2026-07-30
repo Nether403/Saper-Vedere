@@ -40,6 +40,16 @@ export function mergeByMaterial(group) {
     merged.receiveShadow = meshes.some((m) => m.receiveShadow);
 
     for (const mesh of meshes) {
+      /* Anything hanging off a merged-away mesh — a rigging line, an
+         annotation — would leave the scene graph with it, silently.
+         Re-parent it onto the group first, folding the vanishing mesh's
+         own transform into the child so it stays where it stood.
+         mesh.matrix is current: the bake above called updateMatrix on
+         exactly these meshes. */
+      for (const child of [...mesh.children]) {
+        child.applyMatrix4(mesh.matrix);
+        group.add(child);
+      }
       group.remove(mesh);
       mesh.geometry.dispose();
     }
