@@ -65,7 +65,7 @@ function gear(radius, teeth, depth, material, axis = 'y') {
 
 /* ---- I. the aerial screw ------------------------------------ */
 
-function buildScrew() {
+export function buildScrew() {
   const root = new THREE.Group();
   const parts = {};
 
@@ -181,7 +181,7 @@ function buildScrew() {
 
 /* ---- II. the ornithopter ------------------------------------ */
 
-function buildOrnithopter() {
+export function buildOrnithopter() {
   const root = new THREE.Group();
 
   // Hull: a shallow boat frame the pilot lies in.
@@ -304,7 +304,7 @@ function buildOrnithopter() {
 
 /* ---- III. the self-propelled cart --------------------------- */
 
-function buildCart() {
+export function buildCart() {
   const root = new THREE.Group();
   const spin = [];
 
