@@ -75,6 +75,10 @@ The first run builds the site and starts a preview server, so allow up to two mi
 
 - [ ] **Step 2: Record the outcome**
 
+**Outcome, run 2026-07-30:** PASS. `WEBGL PROBE: {"webgl2":true,"maxTextureSize":8192,"renderer":"ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)","depthTexture":true}`. Software rasterisation via SwiftShader, but a real WebGL2 context with ample texture size, so **Task 12's three browser tests proceed as written** and `shadowBudget` will return the full 1024² map under test. Playwright's browsers were not installed in this environment; `npx playwright install chromium` was needed first.
+
+Note: Steps 2 and 3 below say "Task 10" where they mean **Task 12** — the browser tests live in Task 12, and hand verification in Task 13. Read the task numbers as written in those tasks' own headings.
+
 If it passed and `maxTextureSize >= 1024`, Task 10 proceeds as written.
 
 If `webgl2` is false, or the test failed to acquire a context: Task 10's three browser tests are dropped. Note the failure in this file under Task 10, keep `tests/unit/kit.test.js` as the automated safety net, and verify the visual work by hand in Task 12. Do not attempt to force GPU flags into `playwright.config.js` — that changes the suite's environment for every other test.
