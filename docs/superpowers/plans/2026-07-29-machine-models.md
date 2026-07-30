@@ -917,6 +917,114 @@ test('solidGear spokes leave gaps a solid web would fill', () => {
   expectFinite(spoked);
 });
 
+/* Every triangle's area, its unit normal's y component and the mean y
+   of its corners. Enough to tell a flat face from a wall, and to tell
+   which way the flat face looks. */
+function triangles(geometry) {
+  const p = geometry.getAttribute('position');
+  const index = geometry.getIndex();
+  const a = new THREE.Vector3();
+  const b = new THREE.Vector3();
+  const c = new THREE.Vector3();
+  const ab = new THREE.Vector3();
+  const ac = new THREE.Vector3();
+  const n = new THREE.Vector3();
+  const out = [];
+  for (let i = 0; i < index.count; i += 3) {
+    a.fromBufferAttribute(p, index.getX(i));
+    b.fromBufferAttribute(p, index.getX(i + 1));
+    c.fromBufferAttribute(p, index.getX(i + 2));
+    n.crossVectors(ab.subVectors(b, a), ac.subVectors(c, a));
+    const twice = n.length();
+    if (twice < 1e-12) continue;
+    out.push({ area: twice / 2, ny: n.y / twice, y: (a.y + b.y + c.y) / 3 });
+  }
+  return out;
+}
+
+test('solidGear with no spokes closes both flats with an annular web', () => {
+  const radius = 1;
+  const thickness = 0.1;
+  const depth = 0.08;
+  const hub = 0.18;
+  const root = radius - depth;
+  const hubR = radius * hub;
+  const hy = thickness / 2;
+  const g = solidGear(radius, 12, thickness, { spokes: 0 });
+  const tris = triangles(g);
+
+  // A web is two annular discs. Anything less and the wheel is a pair
+  // of open tubes, which is what a mis-ordered emit loop produces.
+  const ideal = Math.PI * (root ** 2 - hubR ** 2);
+  let up = 0;
+  let down = 0;
+  for (const t of tris) {
+    if (t.ny > 0.9) up += t.area;
+    else if (t.ny < -0.9) down += t.area;
+  }
+  assert.ok(Math.abs(down - ideal) < ideal * 0.05, `-y web area was ${down}, wanted ~${ideal}`);
+  assert.ok(Math.abs(up - ideal) < ideal * 0.05, `+y web area was ${up}, wanted ~${ideal}`);
+
+  // Each flat must look away from the timber, or it renders black.
+  for (const t of tris) {
+    if (Math.abs(t.ny) < 0.9) continue;
+    if (Math.abs(t.y + hy) < 1e-4) {
+      assert.ok(t.ny < 0, `web face at y=-${hy} looks inward, ny was ${t.ny}`);
+    } else if (Math.abs(t.y - hy) < 1e-4) {
+      assert.ok(t.ny > 0, `web face at y=+${hy} looks inward, ny was ${t.ny}`);
+    } else {
+      assert.ok(false, `a flat face floats at y=${t.y}, off both faces of the wheel`);
+    }
+  }
+  expectFinite(g);
+});
+
+test('solidGear spokes run radially and bridge hub to root', () => {
+  const radius = 1;
+  const thickness = 0.1;
+  const spokes = 6;
+  const depth = 0.08;
+  const hub = 0.18;
+  const root = radius - depth;
+  const hubR = radius * hub;
+  const g = solidGear(radius, 12, thickness, { spokes });
+  const p = g.getAttribute('position');
+
+  // Rim and hub walls sit exactly on the flats at |y| = thickness/2.
+  // The spoke bars are thinner, so whatever lies strictly inside the
+  // flats is spoke timber and nothing else.
+  const bars = [];
+  for (let i = 0; i < p.count; i++) {
+    if (Math.abs(p.getY(i)) < thickness / 2 - 1e-4) {
+      bars.push(new THREE.Vector3(p.getX(i), p.getY(i), p.getZ(i)));
+    }
+  }
+  assert.ok(bars.length >= spokes * 8, `expected spoke vertices, found ${bars.length}`);
+
+  for (let i = 0; i < spokes; i++) {
+    const a = (i / spokes) * Math.PI * 2;
+    const along = new THREE.Vector3(Math.cos(a), 0, Math.sin(a));
+    const across = new THREE.Vector3(-Math.sin(a), 0, Math.cos(a));
+    let lo = Infinity;
+    let hi = -Infinity;
+    let count = 0;
+    for (const v of bars) {
+      // Only this spoke's own timber: the opposite spoke shares this
+      // radius but on the far side, and a neighbour 60 degrees away is
+      // more than a bar's half-width off it.
+      if (v.dot(along) <= 0) continue;
+      if (Math.abs(v.dot(across)) > thickness * 0.5) continue;
+      lo = Math.min(lo, v.dot(along));
+      hi = Math.max(hi, v.dot(along));
+      count++;
+    }
+    assert.ok(count > 0, `spoke ${i} has no timber on its own radius`);
+    assert.ok(Math.abs(lo - hubR) < 0.02, `spoke ${i} starts at r=${lo}, wanted ${hubR}`);
+    assert.ok(Math.abs(hi - root) < 0.02, `spoke ${i} ends at r=${hi}, wanted ${root}`);
+  }
+  expectFinite(g);
+});
+
 test('line primitives still build', () => {
   const m = lineMat();
   const l = polyline([new THREE.Vector3(0, 0, 0), new THREE.Vector3(1, 0, 0)], m);
@@ -935,7 +1043,7 @@ test('line primitives still build', () => {
 npm run test:unit
 ```
 
-Expected: FAIL — five new failures.
+Expected: FAIL — seven new failures.
 
 - [ ] **Step 3: Implement**
 
@@ -1005,7 +1113,7 @@ export function solidGear(radius, teeth, thickness, { depth = 0.08, hub = 0.18, 
     for (let i = 0; i < spokes; i++) {
       const a = (i / spokes) * Math.PI * 2;
       const bar = beam(root - hubR, thickness * 0.5, thickness * 0.8);
-      bar.rotateY(-a);
+      bar.rotateY(Math.PI / 2 - a);
       const mid = (hubR + root) / 2;
       bar.translate(Math.cos(a) * mid, 0, Math.sin(a) * mid);
       parts.push(bar);
@@ -1021,9 +1129,7 @@ export function solidGear(radius, teeth, thickness, { depth = 0.08, hub = 0.18, 
       const a = (i / webSegs) * Math.PI * 2;
       const c = Math.cos(a);
       const s = Math.sin(a);
-      for (const y of [-hy, hy]) {
-        wpos.push(c * hubR, y, s * hubR, c * root, y, s * root);
-      }
+      for (const r of [hubR, root]) for (const y of [-hy, hy]) wpos.push(c * r, y, s * r);
     }
     for (let i = 0; i < webSegs; i++) {
       const a = i * 4;

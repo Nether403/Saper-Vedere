@@ -417,7 +417,7 @@ export function solidGear(radius, teeth, thickness, { depth = 0.08, hub = 0.18, 
     for (let i = 0; i < spokes; i++) {
       const a = (i / spokes) * Math.PI * 2;
       const bar = beam(root - hubR, thickness * 0.5, thickness * 0.8);
-      bar.rotateY(-a);
+      bar.rotateY(Math.PI / 2 - a);
       const mid = (hubR + root) / 2;
       bar.translate(Math.cos(a) * mid, 0, Math.sin(a) * mid);
       parts.push(bar);
@@ -433,9 +433,7 @@ export function solidGear(radius, teeth, thickness, { depth = 0.08, hub = 0.18, 
       const a = (i / webSegs) * Math.PI * 2;
       const c = Math.cos(a);
       const s = Math.sin(a);
-      for (const y of [-hy, hy]) {
-        wpos.push(c * hubR, y, s * hubR, c * root, y, s * root);
-      }
+      for (const r of [hubR, root]) for (const y of [-hy, hy]) wpos.push(c * r, y, s * r);
     }
     for (let i = 0; i < webSegs; i++) {
       const a = i * 4;
