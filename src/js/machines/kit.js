@@ -353,3 +353,130 @@ function gridNormal(grid, i, j) {
   if (n.lengthSq() < 1e-12) return new THREE.Vector3(0, 1, 0);
   return n.normalize();
 }
+
+/* ---- gearing ------------------------------------------------ */
+
+/* A toothed wheel with a real tooth profile, lying in the xz plane
+   and extruded along y. The cart folio shows trapezoidal teeth with
+   worn tips, which is what the four-point profile below draws. */
+export function solidGear(radius, teeth, thickness, { depth = 0.08, hub = 0.18, spokes = 0 } = {}) {
+  const hy = thickness / 2;
+  const root = radius - depth;
+  const hubR = radius * hub;
+
+  // Each tooth contributes four rim stations: root, flank, flank, root.
+  const rim = [];
+  for (let i = 0; i < teeth; i++) {
+    const a0 = (i / teeth) * Math.PI * 2;
+    const step = (Math.PI * 2) / teeth;
+    rim.push(
+      { a: a0, r: root },
+      { a: a0 + step * 0.22, r: radius },
+      { a: a0 + step * 0.48, r: radius },
+      { a: a0 + step * 0.7, r: root }
+    );
+  }
+
+  const pos = [];
+  const idx = [];
+
+  // Rim: an outer wall, plus a top and bottom face reaching inward.
+  const ringStart = pos.length / 3;
+  for (const { a, r } of rim) {
+    const c = Math.cos(a) * r;
+    const s = Math.sin(a) * r;
+    pos.push(c, -hy, s, c, hy, s);
+  }
+  const n = rim.length;
+  for (let i = 0; i < n; i++) {
+    const j = (i + 1) % n;
+    const a = ringStart + i * 2;
+    const b = ringStart + j * 2;
+    idx.push(a, a + 1, b, a + 1, b + 1, b);
+  }
+
+  // Hub, as a short cylinder wall.
+  const hubSegs = 20;
+  const hubStart = pos.length / 3;
+  for (let i = 0; i <= hubSegs; i++) {
+    const a = (i / hubSegs) * Math.PI * 2;
+    const c = Math.cos(a) * hubR;
+    const s = Math.sin(a) * hubR;
+    pos.push(c, -hy, s, c, hy, s);
+  }
+  for (let i = 0; i < hubSegs; i++) {
+    const a = hubStart + i * 2;
+    const b = a + 2;
+    idx.push(a, b, a + 1, b, b + 1, a + 1);
+  }
+
+  const parts = [finish(pos, idx)];
+
+  if (spokes > 0) {
+    // Bars from hub to root, each a flat beam lying in the plane.
+    for (let i = 0; i < spokes; i++) {
+      const a = (i / spokes) * Math.PI * 2;
+      const bar = beam(root - hubR, thickness * 0.5, thickness * 0.8);
+      bar.rotateY(-a);
+      const mid = (hubR + root) / 2;
+      bar.translate(Math.cos(a) * mid, 0, Math.sin(a) * mid);
+      parts.push(bar);
+    }
+    // Close the rim and hub with annular faces only where a spoke sits,
+    // which the bars themselves already do; nothing more is needed.
+  } else {
+    // A solid web: two annular discs between hub and root.
+    const webSegs = 24;
+    const wpos = [];
+    const widx = [];
+    for (let i = 0; i <= webSegs; i++) {
+      const a = (i / webSegs) * Math.PI * 2;
+      const c = Math.cos(a);
+      const s = Math.sin(a);
+      for (const y of [-hy, hy]) {
+        wpos.push(c * hubR, y, s * hubR, c * root, y, s * root);
+      }
+    }
+    for (let i = 0; i < webSegs; i++) {
+      const a = i * 4;
+      const b = a + 4;
+      // bottom face
+      widx.push(a, a + 2, b, a + 2, b + 2, b);
+      // top face
+      widx.push(a + 1, b + 1, a + 3, b + 1, b + 3, a + 3);
+    }
+    parts.push(finish(wpos, widx));
+  }
+
+  return mergeGeometries(parts);
+}
+
+/* ---- line work ----------------------------------------------
+   Solids carry the form; lines still carry the annotation. These
+   four come across from the original chapter unchanged. */
+
+export const lineMat = (color, opacity = 0.9) =>
+  new THREE.LineBasicMaterial({ color, transparent: true, opacity });
+
+export function polyline(points, material) {
+  const g = new THREE.BufferGeometry().setFromPoints(points);
+  return new THREE.Line(g, material);
+}
+
+export function segments(pairs, material) {
+  const g = new THREE.BufferGeometry().setFromPoints(pairs);
+  return new THREE.LineSegments(g, material);
+}
+
+export function circle(radius, segs, material, axis = 'y') {
+  const pts = [];
+  for (let i = 0; i <= segs; i++) {
+    const a = (i / segs) * Math.PI * 2;
+    const c = Math.cos(a) * radius;
+    const s = Math.sin(a) * radius;
+    if (axis === 'y') pts.push(new THREE.Vector3(c, 0, s));
+    else if (axis === 'z') pts.push(new THREE.Vector3(c, s, 0));
+    else pts.push(new THREE.Vector3(0, c, s));
+  }
+  return polyline(pts, material);
+}

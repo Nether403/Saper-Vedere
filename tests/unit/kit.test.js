@@ -220,3 +220,59 @@ test('seamLines produces geometry at each requested row', () => {
   assert.ok(b.min[2] < 0.55 && b.max[2] > 0.45, `seam should sit near z=0.5, got ${b.min[2]}..${b.max[2]}`);
   expectFinite(g);
 });
+
+import { circle, lineMat, polyline, segments, solidGear } from '../../src/js/machines/kit.js';
+
+test('solidGear teeth reach the outer radius and roots fall short', () => {
+  const g = solidGear(1, 12, 0.1, { depth: 0.15 });
+  const p = g.getAttribute('position');
+  let outer = 0;
+  let inner = Infinity;
+  for (let i = 0; i < p.count; i++) {
+    const r = Math.hypot(p.getX(i), p.getZ(i));
+    if (r > 0.5) {
+      outer = Math.max(outer, r);
+      inner = Math.min(inner, r);
+    }
+  }
+  assert.ok(Math.abs(outer - 1) < 1e-3, `tooth tip radius was ${outer}`);
+  assert.ok(inner < 0.9, `root radius ${inner} should sit inside the tip`);
+  expectFinite(g);
+});
+
+test('solidGear is extruded along y to its thickness', () => {
+  const g = solidGear(1, 12, 0.2);
+  const b = bounds(g);
+  assert.ok(Math.abs(b.min[1] - -0.1) < 1e-6, `min y was ${b.min[1]}`);
+  assert.ok(Math.abs(b.max[1] - 0.1) < 1e-6, `max y was ${b.max[1]}`);
+});
+
+test('solidGear tooth count is honoured', () => {
+  const coarse = solidGear(1, 8, 0.1);
+  const fine = solidGear(1, 32, 0.1);
+  assert.ok(
+    fine.getAttribute('position').count > coarse.getAttribute('position').count,
+    'more teeth should mean more vertices'
+  );
+});
+
+test('solidGear spokes leave gaps a solid web would fill', () => {
+  const web = solidGear(1, 12, 0.1, { spokes: 0 });
+  const spoked = solidGear(1, 12, 0.1, { spokes: 6 });
+  assert.ok(
+    spoked.getIndex().count !== web.getIndex().count,
+    'a spoked wheel should not triangulate like a solid one'
+  );
+  expectFinite(spoked);
+});
+
+test('line primitives still build', () => {
+  const m = lineMat();
+  const l = polyline([new THREE.Vector3(0, 0, 0), new THREE.Vector3(1, 0, 0)], m);
+  assert.ok(l instanceof THREE.Line);
+  const s = segments([new THREE.Vector3(0, 0, 0), new THREE.Vector3(1, 0, 0)], m);
+  assert.ok(s instanceof THREE.LineSegments);
+  const c = circle(1, 16, m, 'z');
+  assert.ok(c instanceof THREE.Line);
+  assert.ok(bounds(c.geometry).max[0] > 0.99);
+});
