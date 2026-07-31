@@ -461,7 +461,7 @@ function boot() {
   });
 
   whenNear($('#macchine'), async () => {
-    const m = await import('./machines.js');
+    const m = await import('./machines/index.js');
     m.buildMachines({ plateImg, rise, PLATES, REDUCED });
   });
 
