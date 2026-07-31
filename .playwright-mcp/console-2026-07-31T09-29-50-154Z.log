@@ -1,3 +1,12 @@
 [   15172ms] [WARNING] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead. @ http://127.0.0.1:5199/@vite/client:524
 [   22482ms] [WARNING] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead. @ http://127.0.0.1:5199/@vite/client:524
 [   23923ms] [WARNING] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead. @ http://127.0.0.1:5199/@vite/client:524
+[ 9155669ms] [WARNING] WebGL: CONTEXT_LOST_WEBGL: loseContext: context lost @ http://127.0.0.1:5199/:0
+[ 9155670ms] [WARNING] WebGL: CONTEXT_LOST_WEBGL: loseContext: context lost @ http://127.0.0.1:5199/:0
+[ 9155670ms] [WARNING] WebGL: CONTEXT_LOST_WEBGL: loseContext: context lost @ http://127.0.0.1:5199/:0
+[ 9155804ms] [LOG] THREE.WebGLRenderer: Context Lost. @ http://127.0.0.1:5199/node_modules/.vite/deps/three.module-BKY27AXr.js?v=cde12f0d:1693
+[ 9156437ms] [LOG] THREE.WebGLRenderer: Context Lost. @ http://127.0.0.1:5199/node_modules/.vite/deps/three.module-BKY27AXr.js?v=cde12f0d:1693
+[ 9156491ms] [LOG] THREE.WebGLRenderer: Context Lost. @ http://127.0.0.1:5199/node_modules/.vite/deps/three.module-BKY27AXr.js?v=cde12f0d:1693
+[ 9157155ms] [LOG] THREE.WebGLRenderer: Context Restored. @ http://127.0.0.1:5199/node_modules/.vite/deps/three.module-BKY27AXr.js?v=cde12f0d:1693
+[ 9157575ms] [LOG] THREE.WebGLRenderer: Context Restored. @ http://127.0.0.1:5199/node_modules/.vite/deps/three.module-BKY27AXr.js?v=cde12f0d:1693
+[ 9160695ms] [LOG] THREE.WebGLRenderer: Context Restored. @ http://127.0.0.1:5199/node_modules/.vite/deps/three.module-BKY27AXr.js?v=cde12f0d:1693

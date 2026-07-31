@@ -31,7 +31,7 @@ The production output is written to `dist/`.
 | **I · Il Metodo** | Eight of Leonardo’s principles restated as the design rules of this page |
 | **II · Le Opere** | Annotated painting gallery with magnifier, golden-section overlay, hotspots |
 | **III · I Fogli** | Blueprint folio collection from the notebooks |
-| **IV · Le Macchine** | Aerial screw, ornithopter, and self-propelled cart — procedural Three.js blueprints |
+| **IV · Le Macchine** | Aerial screw, ornithopter, and self-propelled cart, built procedurally as timber, iron and canvas |
 | **V · Dentro i Dipinti** | Walkable Last Supper; Mona Lisa depth dive with sfumato fog |
 | **VI · Lo Specchio** | Mirror-writing playground |
 

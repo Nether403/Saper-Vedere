@@ -19,7 +19,7 @@ export function buildMachines({ plateImg, rise, PLATES, REDUCED }) {
     const stage = document.createElement('div');
     stage.className = 'machine-stage';
     stage.setAttribute('role', 'img');
-    stage.setAttribute('aria-label', `${m.en}: a rotatable line model`);
+    stage.setAttribute('aria-label', `${m.en}: a rotatable model of the machine as it would have been built`);
 
     const cap = document.createElement('p');
     cap.className = 'machine-caption';
