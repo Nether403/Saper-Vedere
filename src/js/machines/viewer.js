@@ -41,12 +41,12 @@ export function mountViewer(stage, id, reduced) {
 
   stage.prepend(renderer.domElement);
 
+  const model = build();
+
   const scene = new THREE.Scene();
   scene.fog = new THREE.FogExp2(0x191207, 0.075 * (5.2 / model.frame));
 
   const camera = new THREE.PerspectiveCamera(38, 1.618, 0.1, 200);
-
-  const model = build();
   mergeByMaterial(model.root);
   scene.add(model.root);
   scene.add(makeLightRig(model.frame, { shadows, mapSize }));

@@ -219,7 +219,7 @@ export function buildOrnithopter() {
       right.rotation.z = beat * 0.42;
       left.rotation.y = beat * 0.05;
       right.rotation.y = -beat * 0.05;
-      crank.rotation.z = t * 2.1;
+      crank.rotation.z = beat * 0.65;
       root.position.y = 0.2 + Math.sin(t * 2.1 - 0.6) * 0.06;
     },
     frame: 5.6,

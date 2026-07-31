@@ -29,10 +29,10 @@ The production output is written to `dist/`.
 | Chapter | What it does |
 | --- | --- |
 | **I · Il Metodo** | Eight of Leonardo’s principles restated as the design rules of this page |
-| **II · Le Opere** | Annotated painting gallery with magnifier, golden-section overlay, hotspots |
+| **II · Le Opere** | Annotated painting gallery with magnifier, per-work geometric constructions, hotspots |
 | **III · I Fogli** | Blueprint folio collection from the notebooks |
 | **IV · Le Macchine** | Aerial screw, ornithopter, and self-propelled cart, built procedurally as timber, iron and canvas |
-| **V · Dentro i Dipinti** | Walkable Last Supper; Mona Lisa depth dive with sfumato fog |
+| **V · Dentro i Dipinti** | Walkable Last Supper; Mona Lisa foveal-peripheral smile illusion |
 | **VI · Lo Specchio** | Mirror-writing playground |
 
 Heavy Three.js scenes load only when their chapter approaches the viewport. Three.js is bundled locally by Vite; artwork is currently loaded from the source URLs recorded in the image manifest.
