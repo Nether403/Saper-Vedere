@@ -1,0 +1,2 @@
+[       4ms] [WARNING] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead. @ http://127.0.0.1:5199/@vite/client:524
+[   30629ms] [WARNING] THREE.WARNING: Multiple instances of Three.js being imported. @ http://127.0.0.1:5199/@vite/client:524

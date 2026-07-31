@@ -1,0 +1,525 @@
+- generic [active] [ref=f3e1]:
+  - link "Skip to the codex" [ref=f3e2] [cursor=pointer]:
+    - /url: "#metodo"
+  - navigation "Primary" [ref=f3e3]:
+    - link "SV, Saper Vedere home" [ref=f3e4] [cursor=pointer]:
+      - /url: "#incipit"
+      - text: SV
+    - generic [ref=f3e5]:
+      - link "Atlas" [ref=f3e6] [cursor=pointer]:
+        - /url: "#atlas"
+      - link "Codex" [ref=f3e7] [cursor=pointer]:
+        - /url: "#opere"
+      - link "Sources" [ref=f3e8] [cursor=pointer]:
+        - /url: "#colophon"
+    - button "Fieldbook 0" [ref=f3e9] [cursor=pointer]:
+      - text: Fieldbook
+      - generic [ref=f3e10]: "0"
+  - navigation "Chapters":
+    - list:
+      - listitem:
+        - link "· Incipit" [ref=f3e11] [cursor=pointer]:
+          - /url: "#incipit"
+          - generic [ref=f3e12]: ·
+          - generic [ref=f3e13]: Incipit
+      - listitem:
+        - link "I Il Metodo" [ref=f3e14] [cursor=pointer]:
+          - /url: "#metodo"
+          - generic [ref=f3e15]: I
+          - generic: Il Metodo
+      - listitem:
+        - link "II Le Opere" [ref=f3e16] [cursor=pointer]:
+          - /url: "#opere"
+          - generic [ref=f3e17]: II
+          - generic: Le Opere
+      - listitem:
+        - link "III I Fogli" [ref=f3e18] [cursor=pointer]:
+          - /url: "#fogli"
+          - generic [ref=f3e19]: III
+          - generic: I Fogli
+      - listitem:
+        - link "IV Le Macchine" [ref=f3e20] [cursor=pointer]:
+          - /url: "#macchine"
+          - generic [ref=f3e21]: IV
+          - generic: Le Macchine
+      - listitem:
+        - link "V Dentro i Dipinti" [ref=f3e22] [cursor=pointer]:
+          - /url: "#dipinti"
+          - generic [ref=f3e23]: V
+          - generic: Dentro i Dipinti
+      - listitem:
+        - link "VI Lo Specchio" [ref=f3e24] [cursor=pointer]:
+          - /url: "#specchio"
+          - generic [ref=f3e25]: VI
+          - generic: Lo Specchio
+      - listitem:
+        - link "· Colophon" [ref=f3e26] [cursor=pointer]:
+          - /url: "#colophon"
+          - generic [ref=f3e27]: ·
+          - generic: Colophon
+  - banner [ref=f3e28]:
+    - generic [ref=f3e29]:
+      - img "Leonardo da Vinci, studies of water passing obstacles and falling" [ref=f3e30]
+      - generic [ref=f3e31]:
+        - generic [ref=f3e32]: water
+        - generic [ref=f3e33]: air
+        - generic [ref=f3e34]: hair
+        - generic [ref=f3e35]: stone
+    - generic [ref=f3e36]:
+      - paragraph [ref=f3e37]: An atlas of Leonardo da Vinci · 1452 – 1519
+      - heading "Saper Vedere" [level=1] [ref=f3e38]:
+        - generic [ref=f3e39]:
+          - generic [ref=f3e40]: Saper Vedere
+          - generic: Saper Vedere
+      - paragraph [ref=f3e41]:
+        - emphasis [ref=f3e42]: Knowing how to see.
+      - paragraph [ref=f3e43]: He did not divide art from anatomy, water from hair, or flight from mechanics. He followed causes across disciplines. Begin with one line of moving water and watch it become weather, muscle, smoke and machine.
+      - generic [ref=f3e44]:
+        - paragraph [ref=f3e45]: Which way is the water moving?
+        - button "Trace the current" [ref=f3e46] [cursor=pointer]:
+          - text: Trace the current
+          - generic [ref=f3e47]: ↗
+      - generic [ref=f3e48]: Enter the atlas
+      - paragraph [ref=f3e51]:
+        - link "Creator not recorded in the image manifest" [ref=f3e52] [cursor=pointer]:
+          - /url: https://commons.wikimedia.org/wiki/File:Studies_of_Water_passing_Obstacles_and_falling.jpg
+        - text: · Public domain
+  - main [ref=f3e53]:
+    - region [ref=f3e54]:
+      - generic [ref=f3e55]:
+        - generic [ref=f3e56]:
+          - paragraph [ref=f3e57]: The Atlas of Causes
+          - heading "Four currents, one restless mind." [level=2] [ref=f3e58]: Four currents,one restless mind.
+          - paragraph [ref=f3e59]: Leonardo's subjects are not separate rooms. Each is a door into the next. Choose a current, or descend into the complete Codex.
+        - generic [ref=f3e60]:
+          - link "I Light / Eye Sfumato, perception, shadow, atmosphere ↗" [ref=f3e61] [cursor=pointer]:
+            - /url: "#opere"
+            - generic [ref=f3e62]: I
+            - generic [ref=f3e63]: Light / Eye
+            - generic [ref=f3e64]: Sfumato, perception, shadow, atmosphere
+            - text: ↗
+          - link "II Flow / Air / Water Vortices, weather, hair, flight, geology ↗" [ref=f3e65] [cursor=pointer]:
+            - /url: "#fogli"
+            - generic [ref=f3e66]: II
+            - generic [ref=f3e67]: Flow / Air / Water
+            - generic [ref=f3e68]: Vortices, weather, hair, flight, geology
+            - text: ↗
+          - link "III Force / Body / Mechanism Anatomy, gesture, power, gears, motion ↗" [ref=f3e69] [cursor=pointer]:
+            - /url: "#macchine"
+            - generic [ref=f3e70]: III
+            - generic [ref=f3e71]: Force / Body / Mechanism
+            - generic [ref=f3e72]: Anatomy, gesture, power, gears, motion
+            - text: ↗
+          - link "IV Measure / Space Proportion, perspective, scale, distortion ↗" [ref=f3e73] [cursor=pointer]:
+            - /url: "#dipinti"
+            - generic [ref=f3e74]: IV
+            - generic [ref=f3e75]: Measure / Space
+            - generic [ref=f3e76]: Proportion, perspective, scale, distortion
+            - text: ↗
+    - generic [ref=f3e78]:
+      - generic [ref=f3e79]:
+        - generic [ref=f3e80]: Capitolo I
+        - heading "Il Metodo" [level=2] [ref=f3e81]
+        - paragraph [ref=f3e82]: The method — and the rules of this page
+        - paragraph [ref=f3e83]: Leonardo never wrote the treatise he kept promising. What survives is a method, scattered across the notebooks and recoverable from them. Below, each of his principles is stated, and then stated again as the rule it imposed on the document you are reading. This chapter is the specification for its own presentation.
+      - list [ref=f3e84]:
+        - listitem [ref=f3e85]:
+          - generic [ref=f3e86]: i
+          - generic [ref=f3e87]:
+            - heading "Saper vedere" [level=3] [ref=f3e88]
+            - paragraph [ref=f3e89]: Knowing how to see
+            - paragraph [ref=f3e90]: "Leonardo’s own phrase for the discipline he thought underlay every art and every science: not looking, but knowing how to look."
+          - generic [ref=f3e91]:
+            - generic [ref=f3e92]: Therefore, on this page
+            - paragraph [ref=f3e93]: Nothing on this page explains itself before you have looked at it. Captions arrive after the image, and the annotations on the paintings stay closed until you open them. The reward for patience is the only reward offered.
+        - listitem [ref=f3e94]:
+          - generic [ref=f3e95]: ii
+          - generic [ref=f3e96]:
+            - heading "Sfumato" [level=3] [ref=f3e97]
+            - paragraph [ref=f3e98]: Smoke
+            - paragraph [ref=f3e99]: He instructed painters to let light and shade run together “senza linee o segni, a guisa di fumo” — without lines or borders, in the manner of smoke.
+          - generic [ref=f3e100]:
+            - generic [ref=f3e101]: Therefore, on this page
+            - paragraph [ref=f3e102]: There are almost no borders in this document. Chapters dissolve into the chapters beneath them; panels are separated by gradients and shadow rather than by rules; the one hairline used anywhere fades out before it reaches its own ends.
+        - listitem [ref=f3e103]:
+          - generic [ref=f3e104]: iii
+          - generic [ref=f3e105]:
+            - heading "Proporzione" [level=3] [ref=f3e106]
+            - paragraph [ref=f3e107]: Proportion
+            - paragraph [ref=f3e108]:
+              - text: He drew the illustrations for Luca Pacioli’s
+              - emphasis [ref=f3e109]: De divina proportione
+              - text: in Milan, and spent years measuring the human body against itself.
+          - generic [ref=f3e110]:
+            - generic [ref=f3e111]: Therefore, on this page
+            - paragraph [ref=f3e112]: Every measurement here descends from φ = 1.618. The two columns of the page stand in golden section; the type scale climbs in powers of φ; the spacing steps are Fibonacci numbers — 5, 8, 13, 21, 34, 55, 89. No value in the stylesheet was chosen because it looked about right.
+        - listitem [ref=f3e113]:
+          - generic [ref=f3e114]: iv
+          - generic [ref=f3e115]:
+            - heading "Chiaroscuro" [level=3] [ref=f3e116]
+            - paragraph [ref=f3e117]: Light and shade
+            - paragraph [ref=f3e118]: He held that an object is known by the way light dies across it, and that the painter who outlines a form has already failed to observe it.
+          - generic [ref=f3e119]:
+            - generic [ref=f3e120]: Therefore, on this page
+            - paragraph [ref=f3e121]: Depth is modelled with warm shadow, never with an outline or a hard drop shadow. Raised surfaces catch a thin highlight along their upper edge, the way gesso does. Nothing is pure black and nothing is pure white, because he insisted that neither occurs in nature.
+        - listitem [ref=f3e122]:
+          - generic [ref=f3e123]: v
+          - generic [ref=f3e124]:
+            - heading "Notomia" [level=3] [ref=f3e125]
+            - paragraph [ref=f3e126]: Anatomy
+            - paragraph [ref=f3e127]: He dissected perhaps thirty bodies to learn what governed the surface, and drew the same shoulder from four sides so the structure beneath could not hide.
+          - generic [ref=f3e128]:
+            - generic [ref=f3e129]: Therefore, on this page
+            - paragraph [ref=f3e130]: Every image here can be stripped to its construction. The paintings carry an overlay that exposes their geometry; the machines can be reduced to the blueprint they were drawn from. The finished surface is never the only thing on offer.
+        - listitem [ref=f3e131]:
+          - generic [ref=f3e132]: vi
+          - generic [ref=f3e133]:
+            - heading "Moto" [level=3] [ref=f3e134]
+            - paragraph [ref=f3e135]: Motion
+            - paragraph [ref=f3e136]: “Il moto è causa d’ogni vita” — motion is the cause of all life. He studied it in water, in birds, in the tendons of the hand.
+          - generic [ref=f3e137]:
+            - generic [ref=f3e138]: Therefore, on this page
+            - paragraph [ref=f3e139]: Nothing appears or disappears instantly. Every transition carries momentum into and out of itself on a single easing curve, and the machines keep turning whether or not you are watching them.
+        - listitem [ref=f3e140]:
+          - generic [ref=f3e141]: vii
+          - generic [ref=f3e142]:
+            - heading "Esperienza" [level=3] [ref=f3e143]
+            - paragraph [ref=f3e144]: Experience
+            - paragraph [ref=f3e145]: "His answer to the scholars who out-argued him: experience never deceives; only our judgements deceive us, by expecting of experience what it never promised."
+          - generic [ref=f3e146]:
+            - generic [ref=f3e147]: Therefore, on this page
+            - paragraph [ref=f3e148]: Claims made here are demonstrated rather than asserted. The aerial screw turns so you can see why it cannot lift itself. The refectory is walkable so you can find the vanishing point yourself instead of being told where it is.
+        - listitem [ref=f3e149]:
+          - generic [ref=f3e150]: viii
+          - generic [ref=f3e151]:
+            - heading "Il foglio" [level=3] [ref=f3e152]
+            - paragraph [ref=f3e153]: The sheet
+            - paragraph [ref=f3e154]: He left roughly seven thousand notebook pages and almost no finished treatises. Geometry, shopping lists, riddles and anatomy share a single sheet.
+          - generic [ref=f3e155]:
+            - generic [ref=f3e156]: Therefore, on this page
+            - paragraph [ref=f3e157]: This is a notebook, not a monograph. It is set as folios with marginalia in the gutter, it writes backwards where he wrote backwards, and it admits in the colophon what it has left unfinished.
+    - generic [ref=f3e159]:
+      - generic [ref=f3e160]:
+        - generic [ref=f3e161]: Capitolo II
+        - heading "Le Opere" [level=2] [ref=f3e162]
+        - paragraph [ref=f3e163]: Fewer than twenty paintings, and half of them unfinished
+        - paragraph [ref=f3e164]: He completed almost nothing. The accepted corpus runs to about fifteen panels depending on who is counting, several abandoned mid-work, and it was still enough to reorganise European painting. Take the lens to any plate. Open the annotations only after you have looked.
+      - generic [ref=f3e165]:
+        - generic [ref=f3e166]:
+          - paragraph [ref=f3e168]: Unrolling the plate…
+          - generic [ref=f3e169]:
+            - button "Lens" [ref=f3e170] [cursor=pointer]
+            - button "Golden section" [ref=f3e171] [cursor=pointer]
+            - button "Annotations" [ref=f3e172] [cursor=pointer]
+            - generic [ref=f3e173]: Hold the lens over the surface to magnify it
+        - complementary [ref=f3e174]
+      - list "The paintings"
+    - generic [ref=f3e176]:
+      - generic [ref=f3e177]:
+        - generic [ref=f3e178]: Capitolo III
+        - heading "I Fogli" [level=2] [ref=f3e179]
+        - paragraph [ref=f3e180]: The sheets
+        - paragraph [ref=f3e181]: Roughly seven thousand pages survive, perhaps a quarter of what he made. They are not organised. Anatomy shares a sheet with a shopping list; a siege engine shares one with a riddle. Below they are sorted into the five preoccupations he kept returning to, which is a convenience he never granted himself.
+      - generic [ref=f3e182]:
+        - generic [ref=f3e183]:
+          - generic [ref=f3e184]:
+            - heading "Volare" [level=3] [ref=f3e185]
+            - paragraph [ref=f3e186]: On flight
+            - paragraph [ref=f3e187]: He watched birds for thirty years and filled a codex with them. The problem he never solved is that a man has perhaps a tenth of the power-to-weight ratio the job requires.
+          - generic [ref=f3e188]:
+            - figure [ref=f3e189]:
+              - img "The aerial screw" [ref=f3e191]
+              - generic [ref=f3e192]:
+                - heading "The aerial screw" [level=4] [ref=f3e193]
+                - paragraph [ref=f3e194]: Paris Manuscript B, f. 83v · c. 1487–1490
+                - paragraph [ref=f3e195]: "A helical surface of starched linen meant to compress the air and climb it, like a screw entering wood. It cannot work: with the crew turning the shaft from inside, the whole machine would simply rotate the other way."
+                - paragraph [ref=f3e196]:
+                  - link "Creator not recorded in the image manifest" [ref=f3e197] [cursor=pointer]:
+                    - /url: https://commons.wikimedia.org/wiki/File:Leonardo_da_Vinci_helicopter_and_lifting_wing.jpg
+                  - text: · Public domain
+            - figure [ref=f3e198]:
+              - img "A flying machine" [ref=f3e200]
+              - generic [ref=f3e201]:
+                - heading "A flying machine" [level=4] [ref=f3e202]
+                - paragraph [ref=f3e203]: Paris Manuscript B · c. 1488
+                - paragraph [ref=f3e204]: A wing frame of ash, cane, and fustian, worked by the pilot’s arms and legs through a lattice of cords. The linkage is exact. The power source is a man, and that is the flaw.
+                - paragraph [ref=f3e205]:
+                  - link "Leonardo da Vinci" [ref=f3e206] [cursor=pointer]:
+                    - /url: https://commons.wikimedia.org/wiki/File:Design_for_a_Flying_Machine.jpg
+                  - text: · Public domain
+            - figure [ref=f3e207]:
+              - img "The Arno valley" [ref=f3e209]
+              - generic [ref=f3e210]:
+                - heading "The Arno valley" [level=4] [ref=f3e211]
+                - paragraph [ref=f3e212]: Gabinetto dei Disegni, Uffizi · dated 5 August 1473
+                - paragraph [ref=f3e213]: His earliest dated drawing, made at twenty-one, and already looking down on the world from an altitude no one had drawn from before. The hatching is left-handed, running down from upper right.
+                - paragraph [ref=f3e214]:
+                  - link "Leonardo da Vinci" [ref=f3e215] [cursor=pointer]:
+                    - /url: https://commons.wikimedia.org/wiki/File:Study_of_a_Tuscan_Landscape.jpg
+                  - text: · Public domain
+        - generic [ref=f3e216]:
+          - generic [ref=f3e217]:
+            - heading "Guerra" [level=3] [ref=f3e218]
+            - paragraph [ref=f3e219]: On war
+            - paragraph [ref=f3e220]: His letter to Ludovico Sforza offers nine kinds of weapon before mentioning, almost as a postscript, that he can also paint. He needed the job.
+          - generic [ref=f3e221]:
+            - figure [ref=f3e222]:
+              - img "A covered chariot" [ref=f3e224]
+              - generic [ref=f3e225]:
+                - heading "A covered chariot" [level=4] [ref=f3e226]
+                - paragraph [ref=f3e227]: British Museum, 1860,0616.99 · c. 1487–1488
+                - paragraph [ref=f3e228]: A conical armoured shell on four wheels, bristling with light cannon, cranked from within by eight men. As drawn, the gearing turns the front and rear wheels in opposite directions — possibly a deliberate error, possibly a draughtsman’s slip.
+                - paragraph [ref=f3e229]:
+                  - link "Leonardo da Vinci" [ref=f3e230] [cursor=pointer]:
+                    - /url: https://commons.wikimedia.org/wiki/File:Leonardo_da_Vinci_-_1860,0616.99,_Studies_of_military_tank-like_machines.jpg
+                  - text: · Public domain
+            - figure [ref=f3e231]:
+              - img "The giant crossbow" [ref=f3e233]
+              - generic [ref=f3e234]:
+                - heading "The giant crossbow" [level=4] [ref=f3e235]
+                - paragraph [ref=f3e236]: Codex Atlanticus, f. 149r · c. 1486–1488
+                - paragraph [ref=f3e237]: Twenty-four braccia across, of laminated wood for flex, drawn by a worm gear and released by a mallet blow to a pin. Never built. The drawing is a presentation piece, complete with a tiny figure supplied to prove the scale.
+                - paragraph [ref=f3e238]:
+                  - link "Shubol3D" [ref=f3e239] [cursor=pointer]:
+                    - /url: https://commons.wikimedia.org/wiki/File:Leonardo_da_Vinci%27s_Giant_Crossbow_-_design.jpg
+                  - text: · CC BY-SA 4.0
+            - figure [ref=f3e240]:
+              - img "The self-propelled cart" [ref=f3e242]
+              - generic [ref=f3e243]:
+                - heading "The self-propelled cart" [level=4] [ref=f3e244]
+                - paragraph [ref=f3e245]: Codex Atlanticus, f. 812r · c. 1478–1480
+                - paragraph [ref=f3e246]: "Powered by two coiled leaf springs, steerable, with a programmable escapement. Built at last in 2004 by the Institute and Museum of the History of Science in Florence: it ran. Probably a theatrical device rather than a vehicle."
+                - paragraph [ref=f3e247]:
+                  - link "Leonardo da Vinci" [ref=f3e248] [cursor=pointer]:
+                    - /url: https://commons.wikimedia.org/wiki/File:LeonardoCardDrawing.jpg
+                  - text: · Public domain
+        - generic [ref=f3e249]:
+          - generic [ref=f3e250]:
+            - heading "Il corpo" [level=3] [ref=f3e251]
+            - paragraph [ref=f3e252]: On the body
+            - paragraph [ref=f3e253]: He dissected by candlelight, in cold weather so the bodies would keep, and produced anatomical drawings that were not equalled for two hundred and fifty years — and that nobody saw, because he never published them.
+          - generic [ref=f3e254]:
+            - figure [ref=f3e255]:
+              - img "Vitruvian Man" [ref=f3e257]
+              - generic [ref=f3e258]:
+                - heading "Vitruvian Man" [level=4] [ref=f3e259]
+                - paragraph [ref=f3e260]: Gallerie dell’Accademia, Venice · c. 1490
+                - paragraph [ref=f3e261]: Vitruvius claimed the body fits both a circle and a square. It does not, quite. Leonardo’s solution is to give the two figures different centres — the navel for the circle, the groin for the square — and let the limbs move between them.
+                - paragraph [ref=f3e262]:
+                  - link "Leonardo da Vinci" [ref=f3e263] [cursor=pointer]:
+                    - /url: https://commons.wikimedia.org/wiki/File:Da_Vinci_Vitruve_Luc_Viatour.jpg
+                  - text: · Public domain
+            - figure [ref=f3e264]:
+              - img "Studies of the foetus in the womb" [ref=f3e266]
+              - generic [ref=f3e267]:
+                - heading "Studies of the foetus in the womb" [level=4] [ref=f3e268]
+                - paragraph [ref=f3e269]: Royal Collection, Windsor · c. 1511
+                - paragraph [ref=f3e270]: The first accurate drawing of a human foetus in the uterus. The womb is opened like a seed case. The cotyledons on the inner surface belong to a cow — he had dissected one, and borrowed the detail.
+                - paragraph [ref=f3e271]:
+                  - link "Leonardo da Vinci" [ref=f3e272] [cursor=pointer]:
+                    - /url: https://commons.wikimedia.org/wiki/File:Leonardo_da_Vinci_-_Studies_of_the_foetus_in_the_womb.jpg
+                  - text: · Public domain
+            - figure [ref=f3e273]:
+              - img "Head of a man in profile, with proportions" [ref=f3e275]
+              - generic [ref=f3e276]:
+                - heading "Head of a man in profile, with proportions" [level=4] [ref=f3e277]
+                - paragraph [ref=f3e278]: Royal Collection, Windsor · c. 1490
+                - paragraph [ref=f3e279]: "The head divided and subdivided into a grid of relations, each interval measured against the others. A face treated exactly as he treated a machine: something whose parts must be shown to agree."
+                - paragraph [ref=f3e280]:
+                  - link "Leonardo da Vinci" [ref=f3e281] [cursor=pointer]:
+                    - /url: https://commons.wikimedia.org/wiki/File:Leonardo_da_Vinci_-_RCIN_912606,_A_head_of_a_man_in_profile,_with_proportions_indicated_c.1490.jpg
+                  - text: · Public domain
+        - generic [ref=f3e282]:
+          - generic [ref=f3e283]:
+            - heading "Natura" [level=3] [ref=f3e284]
+            - paragraph [ref=f3e285]: On nature
+            - paragraph [ref=f3e286]: Water, weather, plants, cats. He drew whatever moved, and he drew it as a system of forces rather than as a shape.
+          - generic [ref=f3e287]:
+            - figure [ref=f3e288]:
+              - img "Water passing obstacles" [ref=f3e290]
+              - generic [ref=f3e291]:
+                - heading "Water passing obstacles" [level=4] [ref=f3e292]
+                - paragraph [ref=f3e293]: Royal Collection, Windsor · c. 1508–1509
+                - paragraph [ref=f3e294]:
+                  - text: He called water
+                  - emphasis [ref=f3e295]: il vetturale della natura
+                  - text: ", the carrier of nature. These are vortices drawn from observation, three and a half centuries before anyone had the mathematics for turbulence."
+                - paragraph [ref=f3e296]:
+                  - link "Creator not recorded in the image manifest" [ref=f3e297] [cursor=pointer]:
+                    - /url: https://commons.wikimedia.org/wiki/File:Studies_of_Water_passing_Obstacles_and_falling.jpg
+                  - text: · Public domain
+            - figure [ref=f3e298]:
+              - img "A deluge" [ref=f3e300]
+              - generic [ref=f3e301]:
+                - heading "A deluge" [level=4] [ref=f3e302]
+                - paragraph [ref=f3e303]: Royal Collection, Windsor · c. 1517–1518
+                - paragraph [ref=f3e304]: From the last years, a series in black chalk in which the world ends. The same spiral he found in water and in hair is here at the scale of weather, tearing down mountains.
+                - paragraph [ref=f3e305]:
+                  - link "Leonardo da Vinci" [ref=f3e306] [cursor=pointer]:
+                    - /url: https://commons.wikimedia.org/wiki/File:Leonardo_da_Vinci_-_A_deluge_-_Google_Art_Project.jpg
+                  - text: · Public domain
+            - figure [ref=f3e307]:
+              - img "A star-of-Bethlehem and other plants" [ref=f3e309]
+              - generic [ref=f3e310]:
+                - heading "A star-of-Bethlehem and other plants" [level=4] [ref=f3e311]
+                - paragraph [ref=f3e312]: Royal Collection, Windsor · c. 1506–1512
+                - paragraph [ref=f3e313]: Botanically exact and compositionally impossible — the leaves spiral outward with a force no plant has. He is drawing the growth, not the specimen.
+                - paragraph [ref=f3e314]:
+                  - link "Leonardo da Vinci" [ref=f3e315] [cursor=pointer]:
+                    - /url: https://commons.wikimedia.org/wiki/File:Leonardo_da_Vinci_-_A_star-of-Bethlehem_and_other_plants,_c.1506-12.jpg
+                  - text: · CC BY-SA 4.0
+            - figure [ref=f3e316]:
+              - img "Cats, lions and a dragon" [ref=f3e318]
+              - generic [ref=f3e319]:
+                - heading "Cats, lions and a dragon" [level=4] [ref=f3e320]
+                - paragraph [ref=f3e321]: Royal Collection, Windsor · c. 1517–1518
+                - paragraph [ref=f3e322]: A sheet of cats in every attitude a cat adopts, with a dragon inserted among them on the same terms, drawn from the same anatomy. He is testing whether an invented animal can be made to obey observed rules.
+                - paragraph [ref=f3e323]:
+                  - link "Leonardo da Vinci" [ref=f3e324] [cursor=pointer]:
+                    - /url: https://commons.wikimedia.org/wiki/File:Leonardo_da_Vinci_-_RCIN_912363,_Cats,_lions,_and_a_dragon_c.1517-18.jpg
+                  - text: · Public domain
+        - generic [ref=f3e325]:
+          - generic [ref=f3e326]:
+            - heading "Il mestiere" [level=3] [ref=f3e327]
+            - paragraph [ref=f3e328]: On the craft
+            - paragraph [ref=f3e329]: Studies made in service of paintings, and studies made in service of nothing in particular.
+          - generic [ref=f3e330]:
+            - figure [ref=f3e331]:
+              - img "Study of drapery" [ref=f3e333]
+              - generic [ref=f3e334]:
+                - heading "Study of drapery" [level=4] [ref=f3e335]
+                - paragraph [ref=f3e336]: Fondation Custodia, Paris · c. 1475–1482
+                - paragraph [ref=f3e337]: "Verrocchio’s workshop exercise: soak linen in clay slip, arrange it, let it set, then draw it in brush and wash on prepared linen. Pure tone, no contour — the sfumato method, learned as an apprentice drill."
+                - paragraph [ref=f3e338]:
+                  - link "Leonardo da Vinci" [ref=f3e339] [cursor=pointer]:
+                    - /url: https://commons.wikimedia.org/wiki/File:Leonardo_da_Vinci_-_Study_of_Drapery,_c1475-1482_-Fondation_Custodia_6632.jpg
+                  - text: · Public domain
+            - figure [ref=f3e340]:
+              - img "Study of a central-plan church" [ref=f3e342]
+              - generic [ref=f3e343]:
+                - heading "Study of a central-plan church" [level=4] [ref=f3e344]
+                - paragraph [ref=f3e345]: Paris Manuscript B · c. 1488
+                - paragraph [ref=f3e346]: Plan and elevation on one sheet, a domed core budding smaller domes. He built nothing, but Bramante was in Milan at the same time, and these sheets are part of the argument that ends at Saint Peter’s.
+                - paragraph [ref=f3e347]:
+                  - link "Leonardo da Vinci" [ref=f3e348] [cursor=pointer]:
+                    - /url: https://commons.wikimedia.org/wiki/File:Leonardo_da_vinci,_Study_of_a_central_church.jpg
+                  - text: · Public domain
+            - figure [ref=f3e349]:
+              - img "The Sforza monument" [ref=f3e351]
+              - generic [ref=f3e352]:
+                - heading "The Sforza monument" [level=4] [ref=f3e353]
+                - paragraph [ref=f3e354]: Manuscript page on the casting · c. 1490s
+                - paragraph [ref=f3e355]: A bronze horse three times life size. He got as far as a full-scale clay model, then the bronze was requisitioned for cannon and the French used the model for crossbow practice.
+                - paragraph [ref=f3e356]:
+                  - link "Leonardo da Vinci" [ref=f3e357] [cursor=pointer]:
+                    - /url: https://commons.wikimedia.org/wiki/File:Leonardo_da_Vinci_-_Manuscript_page_on_the_Sforza_monument_-_WGA12879.jpg
+                  - text: · Public domain
+            - figure [ref=f3e358]:
+              - img "A grotesque head" [ref=f3e360]
+              - generic [ref=f3e361]:
+                - heading "A grotesque head" [level=4] [ref=f3e362]
+                - paragraph [ref=f3e363]: Drawing, pen and ink · c. 1490s
+                - paragraph [ref=f3e364]: He collected faces at the edge of what a face can do. Vasari says he would follow an interesting-looking stranger across Florence for a whole day to memorise him.
+                - paragraph [ref=f3e365]:
+                  - link "Leonardo da Vinci" [ref=f3e366] [cursor=pointer]:
+                    - /url: https://commons.wikimedia.org/wiki/File:Leonardo_da_vinci,_Grotesque_head.jpg
+                  - text: · Public domain
+    - generic [ref=f3e369]:
+      - generic [ref=f3e370]: Capitolo IV
+      - heading "Le Macchine Vive" [level=2] [ref=f3e371]
+      - paragraph [ref=f3e372]: The machines, set in motion
+      - paragraph [ref=f3e373]: "Three animated readings of the drawings, built as line models you can turn over in your hands. They are explanatory diagrams rather than measured reconstructions: observed parts, inferred linkages, and open questions remain visible together."
+    - generic [ref=f3e375]:
+      - generic [ref=f3e376]:
+        - generic [ref=f3e377]: Capitolo V
+        - heading "Dentro i Dipinti" [level=2] [ref=f3e378]
+        - paragraph [ref=f3e379]: Inside the paintings
+        - paragraph [ref=f3e380]: A painting in one-point perspective is a set of instructions for rebuilding a room. Here two of them are carried out. The refectory of the Last Supper is reconstructed from its own orthogonals and made walkable; the Mona Lisa is pulled apart into the depth planes it was assembled from. Both scenes stay asleep until you enter them.
+      - generic [ref=f3e381]:
+        - article [ref=f3e382]:
+          - button "Enter the refectory Reconstructs the painted room · loads on demand" [ref=f3e386] [cursor=pointer]:
+            - generic [ref=f3e387]: Enter the refectory
+            - generic [ref=f3e388]: Reconstructs the painted room · loads on demand
+          - generic [ref=f3e389]:
+            - paragraph [ref=f3e390]: Interpretive perspective model
+            - heading "The refectory" [level=3] [ref=f3e391]
+            - paragraph [ref=f3e392]: "Santa Maria delle Grazie, Milan, 1495–98. The painted architecture is not decoration: it is a continuation of the real room, calculated so that the wall appears to open. Every orthogonal converges on Christ's right temple."
+            - paragraph [ref=f3e393]: Walk forward and the coffers close over you. Find the point where the room stops distorting — that is where Leonardo stood to set it out.
+            - paragraph
+        - article [ref=f3e394]:
+          - button "Enter the sfumato Separates the picture into depth planes" [ref=f3e398] [cursor=pointer]:
+            - generic [ref=f3e399]: Enter the sfumato
+            - generic [ref=f3e400]: Separates the picture into depth planes
+          - generic [ref=f3e401]:
+            - paragraph [ref=f3e402]: Interpretive depth study
+            - heading "The depth of a face" [level=3] [ref=f3e403]
+            - paragraph [ref=f3e404]: "The picture is built in receding planes: the parapet and its lost columns, the sitter, the middle ground of road and bridge, the impossible blue mountains, and the haze between them all. Separated, the construction becomes obvious."
+            - paragraph [ref=f3e405]: The haze is the point. He worked out that air is not transparent, and then painted the air.
+            - paragraph
+    - generic [ref=f3e407]:
+      - generic [ref=f3e408]:
+        - generic [ref=f3e409]: Capitolo VI
+        - heading "Lo Specchio" [level=2] [ref=f3e410]
+        - paragraph [ref=f3e411]: The mirror
+        - paragraph [ref=f3e412]: He wrote right to left, letters reversed, so that his notebooks read correctly only in a mirror. The romantic explanation is secrecy. The likelier one is that he was left-handed, and writing backwards keeps the hand out of the wet ink. Write something below and watch it go over.
+      - generic [ref=f3e413]:
+        - generic [ref=f3e414]:
+          - paragraph [ref=f3e415]: As you write it
+          - textbox "Write here, left to right, the ordinary way…" [ref=f3e416]
+          - generic [ref=f3e417]:
+            - button "Il moto è causa d’ogni vita" [ref=f3e418] [cursor=pointer]
+            - button "L’acqua è il vetturale della natura" [ref=f3e419] [cursor=pointer]
+            - button "Saper vedere" [ref=f3e420] [cursor=pointer]
+            - button "Ostinato rigore" [ref=f3e421] [cursor=pointer]
+            - button "Non si volta chi a stella è fisso" [ref=f3e422] [cursor=pointer]
+        - generic [ref=f3e423]:
+          - paragraph [ref=f3e424]: As he wrote it
+          - generic [ref=f3e425]: Il moto è causa d’ogni vita
+          - paragraph [ref=f3e426]: Hold a mirror to your screen and the right-hand panel becomes legible again. He used no cipher and made no attempt to hide anything — a left hand dragged across wet iron-gall ink smears it, and writing backwards solves that.
+  - contentinfo [ref=f3e427]:
+    - generic [ref=f3e428]:
+      - generic [ref=f3e429]:
+        - generic [ref=f3e430]: Colophon
+        - heading "Fonti" [level=2] [ref=f3e431]
+        - paragraph [ref=f3e432]: Sources, and what this document gets wrong on purpose
+      - generic [ref=f3e433]:
+        - list [ref=f3e435]:
+          - listitem [ref=f3e436]:
+            - heading [level=3] [ref=f3e437]:
+              - link "Wikimedia Commons" [ref=f3e438] [cursor=pointer]:
+                - /url: https://commons.wikimedia.org/wiki/Category:Leonardo_da_Vinci
+            - paragraph [ref=f3e439]: Artwork reproductions are loaded from Commons under the license recorded beside each object. Most are public domain; several modern photographs or derivatives require attribution and share-alike terms.
+          - listitem [ref=f3e440]:
+            - heading [level=3] [ref=f3e441]:
+              - link "Royal Collection Trust" [ref=f3e442] [cursor=pointer]:
+                - /url: https://www.rct.uk/collection/themes/collections/leonardo-da-vinci-drawings
+            - paragraph [ref=f3e443]: The Windsor sheets — the anatomy, the deluges, the plants, the cats — are the largest single group of his drawings anywhere, about 550 of them, bound into an album by the 1690s.
+          - listitem [ref=f3e444]:
+            - heading [level=3] [ref=f3e445]:
+              - link "Codex Atlanticus, Biblioteca Ambrosiana" [ref=f3e446] [cursor=pointer]:
+                - /url: https://www.leonardodigitale.com/
+            - paragraph [ref=f3e447]: Twelve volumes, 1,119 sheets, assembled by Pompeo Leoni in the 1580s. The cart and the giant crossbow are here.
+          - listitem [ref=f3e448]:
+            - heading [level=3] [ref=f3e449]:
+              - link "Paris Manuscripts, Institut de France" [ref=f3e450] [cursor=pointer]:
+                - /url: https://www.leonardodigitale.com/
+            - paragraph [ref=f3e451]: Twelve small notebooks, including Manuscript B with the aerial screw, the flying machine and the church studies.
+          - listitem [ref=f3e452]:
+            - heading [level=3] [ref=f3e453]:
+              - text: Martin Kemp,
+              - emphasis [ref=f3e454]: "Leonardo da Vinci: The Marvellous Works of Nature and Man"
+            - paragraph [ref=f3e455]: The standard scholarly account, and the source relied on here wherever a dating or an attribution is contested.
+          - listitem [ref=f3e456]:
+            - heading [level=3] [ref=f3e457]:
+              - text: Carlo Pedretti,
+              - emphasis [ref=f3e458]: "Leonardo: The Machines"
+            - paragraph [ref=f3e459]: On the reconstructions, including the 2004 Florence build of the self-propelled cart that finally settled whether it would run.
+        - generic [ref=f3e460]:
+          - paragraph [ref=f3e461]: Declared departures
+          - list [ref=f3e462]:
+            - listitem [ref=f3e463]: The three machines in Chapter IV are modelled from the drawings, not scanned from surviving reconstructions. Members are simplified and dimensions are proportional rather than measured.
+            - listitem [ref=f3e464]: The refectory in Chapter V reconstructs the painted architecture of the Last Supper, not the real room in Santa Maria delle Grazie. The figures are the painting itself, mapped onto the rear wall.
+            - listitem [ref=f3e465]: The depth layers in the Mona Lisa dive are a reading of the picture’s spatial structure, separated by hand. They are an argument about how the painting is built, not a scientific stratigraphy.
+            - listitem [ref=f3e466]: Quotations are given in modern English. Where a phrase is famous but its attribution is thin, it has been left out.
+          - separator [ref=f3e467]
+          - paragraph [ref=f3e468]: Set in Cormorant Garamond, EB Garamond and Cinzel. Plates are sourced from Wikimedia Commons under their individual recorded licenses. Machines and rooms are interpretive procedural models, not scans of surviving objects or spaces.
