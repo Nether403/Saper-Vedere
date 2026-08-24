@@ -106,6 +106,22 @@ export const WORKS = [
       { x: 0.880, y: 0.345, t: 'The right horizon', d: 'Distance here is rendered with aerial perspective: everything far away loses contrast and turns blue, because he had worked out that the air itself is not transparent.' },
       { x: 0.800, y: 0.470, t: 'The bridge', d: 'A small segmental bridge over the river on the right \u2014 one of the few unmistakably man-made things in a landscape that is otherwise geological and unpeopled.' },
     ],
+    constructions: [
+      {
+        kind: 'pyramid',
+        params: { apex: [0.470, 0.112], baseLeft: [0.200, 0.870], baseRight: [0.780, 0.870] },
+        label: 'Pyramid',
+        claim: 'The composition is built on a triangular armature: the veil at the apex, the hands at the base corners.',
+        verdict: 'This is well supported. The hands, the head and the line of the shawl form a stable triangle that multiple scholars have identified independently. It is one of the few structural claims about this painting that does not require special pleading.',
+      },
+      {
+        kind: 'phi',
+        params: { cx: 0.50, cy: 0.50, fill: 0.92 },
+        label: 'Golden section',
+        claim: 'The painting\u2019s proportions encode the golden ratio \u2014 the most widely reproduced claim about its geometry.',
+        verdict: 'Weak. A \u03c6 rectangle can be fitted to almost any near-portrait-format panel, and no document of Leonardo\u2019s describes constructing this picture from the golden ratio. The \u03c6 grid lines do not land on any specific feature with precision. The claim circulates because it is satisfying, not because it is evidenced.',
+      },
+    ],
   },
   {
     id: 'cenacolo',
@@ -128,6 +144,22 @@ export const WORKS = [
       { x: 0.500, y: 0.455, t: 'The three windows', d: 'The only light source in the painted world is behind Christ, and the pediment over the central window functions as a halo he was not given.' },
       { x: 0.470, y: 0.885, t: 'The doorway', d: 'In 1652 the monks cut a door through the wall for kitchen access and took Christ\u2019s feet with it. The painting has also survived Napoleonic troops, damp, and a bomb that removed the refectory roof in 1943.' },
     ],
+    constructions: [
+      {
+        kind: 'orthogonals',
+        params: {
+          vp: [0.494, 0.485],
+          edgePoints: [
+            [0, 0], [1, 0], [0, 1], [1, 1],
+            [0, 0.5], [1, 0.5], [0.25, 0], [0.75, 0],
+            [0.25, 1], [0.75, 1],
+          ],
+        },
+        label: 'Orthogonals',
+        claim: 'Every line that recedes into the picture\u2019s depth converges on Christ\u2019s right temple \u2014 the ceiling coffers, the wall hangings, the table edge.',
+        verdict: 'Certain. The vanishing point is measurable on the wall itself (a nail hole marks it), and Chapter V\u2019s walkable reconstruction is built from this exact geometry. This is the strongest geometric claim on the page.',
+      },
+    ],
   },
   {
     id: 'ermine',
@@ -149,6 +181,7 @@ export const WORKS = [
       { x: 0.110, y: 0.160, t: 'The black ground', d: 'The background is not his. The original was a blue-grey wall with a window; an overpainter in the early nineteenth century blacked the whole thing out.' },
       { x: 0.165, y: 0.038, t: 'A forged signature', d: 'The inscription reads LA BELE FERONIERE / LEONARD D\u2019AWINCI. It was added by the same later hand, and it names the wrong painting.' },
     ],
+    constructions: [],
   },
   {
     id: 'ginevra',
@@ -170,6 +203,7 @@ export const WORKS = [
       { x: 0.860, y: 0.600, t: 'Water and haze', d: 'Two church spires and a lake, already dissolving into blue \u2014 aerial perspective, in a picture painted before he was twenty-five.' },
       { x: 0.500, y: 0.960, t: 'The missing third', d: 'The panel was cut down at some point, probably because of damage. Her hands are gone; a surviving silverpoint study of hands at Windsor is generally taken to record them.' },
     ],
+    constructions: [],
   },
   {
     id: 'battista',
@@ -184,7 +218,22 @@ export const WORKS = [
       'Generally taken to be the last painting he worked on. The darkness around the figure has deepened with age, but it was always meant to be very dark.',
     seeing:
       'Everything has been removed: no landscape, no attributes beyond a reed cross, no ground to stand on. What is left is a body emerging from black and a finger pointing up, and a smile that has made a lot of viewers uncomfortable for five hundred years.',
-    hotspots: [],
+    hotspots: [
+      { x: 0.500, y: 0.440, t: 'The pointing finger', d: 'The index finger points straight up, the conventional gesture of revelation. It is the only sharp form in the picture — everything else is modelled into the dark without an edge.' },
+      { x: 0.480, y: 0.310, t: 'The smile', d: 'The same sfumato smile as the Mona Lisa, here pushed further. It is ambiguous in the same mechanical way: the corners are dissolved into shadow so that peripheral vision reads them differently from direct vision.' },
+      { x: 0.540, y: 0.180, t: 'The curls', d: 'The hair is built in spiralling layers of translucent glaze, catching a light whose source is never declared. The ringlets are the most worked surface on the panel.' },
+      { x: 0.420, y: 0.620, t: 'The cross of reeds', d: 'A thin reed cross, barely visible against the dark ground, is the only attribute identifying the figure. Without it this could be Bacchus — and a copy at the Mus\u00e9e Magnin converts it to exactly that.' },
+      { x: 0.300, y: 0.100, t: 'The black ground', d: 'There is no landscape, no room, no air. The figure emerges from darkness and retreats into it. The ground has darkened further over five centuries of varnish oxidation.' },
+    ],
+    constructions: [
+      {
+        kind: 'pyramid',
+        params: { apex: [0.500, 0.060], baseLeft: [0.300, 0.850], baseRight: [0.700, 0.850] },
+        label: 'Pyramid',
+        claim: 'The figure is contained within a triangular silhouette: curls at apex, elbows at base.',
+        verdict: 'Reasonable. The pyramidal containment is visible in most reproductions and is consistent with his use of the same device in the Mona Lisa and the two Virgins of the Rocks. It is a compositional habit rather than a documented construction.',
+      },
+    ],
   },
   {
     id: 'santanna',
@@ -199,7 +248,22 @@ export const WORKS = [
       'Unfinished, and reworked over roughly sixteen years alongside the Mona Lisa. Freud wrote a whole book about it, most of which rests on a mistranslation.',
     seeing:
       'Three generations are stacked into one spiralling mass \u2014 Anne, Mary sitting in her lap, the child twisting away to grip a lamb. The figures make a single rotating body, and the mountains behind them dissolve into the same blue as the sky.',
-    hotspots: [],
+    hotspots: [
+      { x: 0.500, y: 0.250, t: 'Saint Anne\u2019s smile', d: 'The same dissolved, ambiguous expression as the Mona Lisa and the Baptist. It is his signature by this point \u2014 less a mood than a refusal to declare one.' },
+      { x: 0.580, y: 0.680, t: 'The lamb', d: 'The child twists away from his mother to grasp it \u2014 prefiguring the sacrifice, the traditional reading. The torsion that results binds the three figures into one spiralling mass.' },
+      { x: 0.400, y: 0.500, t: 'Mary in Anne\u2019s lap', d: 'An adult woman sitting in her mother\u2019s lap is physically improbable but compositionally essential. It stacks three generations into one rotating body.' },
+      { x: 0.200, y: 0.850, t: 'The blue mountains', d: 'The background dissolves into the same blue as the sky \u2014 aerial perspective carried to the point where solid rock becomes atmosphere.' },
+      { x: 0.650, y: 0.380, t: 'Unfinished passages', d: 'The drapery at the right and portions of the landscape are visibly underworked. Sixteen years of reworking, and he still did not call it done.' },
+    ],
+    constructions: [
+      {
+        kind: 'pyramid',
+        params: { apex: [0.420, 0.100], baseLeft: [0.150, 0.900], baseRight: [0.750, 0.900] },
+        label: 'Pyramid',
+        claim: 'The three figures are contained within a single triangular silhouette, rotating inside it like a spring.',
+        verdict: 'Solid. The pyramidal envelope is documented in preparatory cartoons and is the device that makes three overlapping bodies legible as one group.',
+      },
+    ],
   },
   {
     id: 'rocceLouvre',
@@ -214,7 +278,22 @@ export const WORKS = [
       'Commissioned by the Confraternity of the Immaculate Conception in Milan. A long dispute over payment followed, and a second version was eventually produced. Which one hung on the altar first is still argued about.',
     seeing:
       'The grotto is geologically specific \u2014 he had looked hard at real rock \u2014 and the light comes from an opening you cannot see. The four figures are locked into a pyramid by a chain of pointing, blessing and sheltering hands.',
-    hotspots: [],
+    hotspots: [
+      { x: 0.490, y: 0.300, t: 'The pyramid', d: 'The Virgin\u2019s head is the apex; the two infants and the angel\u2019s hand form the base. It is the most stable composition available, and everything dramatic happens inside it.' },
+      { x: 0.280, y: 0.580, t: 'The angel\u2019s pointing hand', d: 'The angel looks out at the viewer and points toward the infant Baptist \u2014 a guide to reading the scene, inserted as though for an audience who might not recognise the figures.' },
+      { x: 0.620, y: 0.650, t: 'The infant Baptist', d: 'Kneeling in prayer toward the Christ child, hands folded. He is the reason for the angel\u2019s gesture and the object of the Virgin\u2019s sheltering arm.' },
+      { x: 0.400, y: 0.850, t: 'The geological floor', d: 'Specific rock formations \u2014 layered sedimentary beds, eroded by water. He was drawing geological sections in these years and could not separate observation from painting.' },
+      { x: 0.500, y: 0.080, t: 'The grotto opening', d: 'Light enters from behind and above, through a gap in the rock you cannot see directly. It justifies the modelling on the figures without declaring its source.' },
+    ],
+    constructions: [
+      {
+        kind: 'pyramid',
+        params: { apex: [0.490, 0.130], baseLeft: [0.200, 0.880], baseRight: [0.780, 0.880] },
+        label: 'Pyramid',
+        claim: 'The Virgin\u2019s head is the apex; the angel and both infants form the base of a triangular group.',
+        verdict: 'Well supported. The pyramidal grouping is explicit in the composition and is the device he would repeat in the Saint Anne and the Mona Lisa.',
+      },
+    ],
   },
   {
     id: 'rocceLondon',
@@ -229,7 +308,22 @@ export const WORKS = [
       'The second version, with substantial workshop participation. Infrared has revealed a completely different composition underneath \u2014 a kneeling woman, abandoned and painted over.',
     seeing:
       'Put it beside the Paris panel. The angel has stopped pointing and stopped looking out at you; haloes and a cross have been added; the light is colder and the rock harder. It is the same invention, argued down into something more orthodox.',
-    hotspots: [],
+    hotspots: [
+      { x: 0.280, y: 0.550, t: 'The angel no longer points', d: 'In the Paris version the angel looks out and points at the Baptist. Here the angel looks down and the hand is withdrawn. The rhetorical address to the viewer has been removed.' },
+      { x: 0.420, y: 0.140, t: 'Haloes added', d: 'Neither figure carried a halo in the Paris version. The addition is an orthodoxy that the first panel either rejected or did not think to include.' },
+      { x: 0.600, y: 0.630, t: 'The reed cross', d: 'The infant Baptist now holds a thin cross of reeds, identifying him unmistakably. The Paris version left the identification to the composition alone.' },
+      { x: 0.500, y: 0.300, t: 'Colder light', d: 'Compare the skin tones with the Paris panel. The light here is bluer, harder, and the sfumato less extreme. Whether this is workshop handling or deliberate revision is still debated.' },
+      { x: 0.350, y: 0.850, t: 'The rock', d: 'Sharper, more schematic geology than the Paris version. The sedimentary specificity is reduced to decoration.' },
+    ],
+    constructions: [
+      {
+        kind: 'pyramid',
+        params: { apex: [0.490, 0.120], baseLeft: [0.200, 0.880], baseRight: [0.780, 0.880] },
+        label: 'Pyramid',
+        claim: 'The same pyramidal grouping as the Paris version, with the same apex at the Virgin\u2019s head.',
+        verdict: 'The same structure, less intensely felt because the light is flatter and the angel\u2019s withdrawn gesture weakens the base.',
+      },
+    ],
   },
   {
     id: 'annunciazione',
@@ -244,7 +338,28 @@ export const WORKS = [
       'An early work, made while he was still attached to Verrocchio\u2019s workshop. The angel\u2019s wings were originally studied from a bird; a later hand lengthened them.',
     seeing:
       'Mary\u2019s right arm is too long and the lectern sits oddly against the wall. The usual defence is that the panel was made to hang high on a right-hand wall, so that from its intended position the distortion corrects itself \u2014 a claim you can test by walking to the right of any reproduction.',
-    hotspots: [],
+    hotspots: [
+      { x: 0.720, y: 0.500, t: 'The long right arm', d: 'The arm reaching for the book is anatomically too long for the body. If the panel hung high on a right-hand wall, the foreshortening corrects \u2014 but no installation record survives to confirm it.' },
+      { x: 0.680, y: 0.700, t: 'The lectern', d: 'It projects forward at an angle that conflicts with the wall behind it. Either a perspective error or a deliberate distortion meant for an oblique viewing position.' },
+      { x: 0.170, y: 0.500, t: 'The angel\u2019s wings', d: 'Originally studied from the wings of a bird and shorter. A later hand extended them outward with feathers that do not match the careful observation of the originals.' },
+      { x: 0.170, y: 0.350, t: 'The angel\u2019s drapery', d: 'The most fluent passage on the panel \u2014 generally accepted as Leonardo\u2019s own hand, distinct from the harder workshop handling in the architecture.' },
+      { x: 0.500, y: 0.950, t: 'The garden wall', d: 'A low wall with carved ornament separates the loggia from an idealised landscape behind. The trees are rendered with more atmosphere than anything else on the panel.' },
+    ],
+    constructions: [
+      {
+        kind: 'perspective',
+        params: {
+          vp: [0.480, 0.420],
+          edgePoints: [
+            [0.30, 0.95], [0.70, 0.95], [0.30, 0.30], [0.70, 0.30],
+            [1.0, 0.55], [0.0, 0.55],
+          ],
+        },
+        label: 'Perspective',
+        claim: 'The architecture recedes toward a vanishing point behind the lectern. The perspective was reportedly designed for a high right-hand viewing position.',
+        verdict: 'Partially supported. The floor tiles and the lectern do converge, but the anomalous arm length suggests either a deliberate anamorphic correction or an early error. No document confirms the intended installation.',
+      },
+    ],
   },
   {
     id: 'magi',
@@ -259,7 +374,14 @@ export const WORKS = [
       'Commissioned by the monks of San Donato a Scopeto. He worked on it for months, then left for Milan to sell himself to Ludovico Sforza as a military engineer, and never came back to it.',
     seeing:
       'This is the most useful unfinished picture in Europe: you can watch him think. The ground is laid in, the crowd is blocked out in brown wash, and behind the calm foreground group a cavalry battle and a ruined staircase are still fighting for room.',
-    hotspots: [],
+    hotspots: [
+      { x: 0.460, y: 0.700, t: 'The Virgin and Child', d: 'The only fully modelled group \u2014 light and shadow established, anatomy resolved. Everything radiates outward from here in decreasing finish.' },
+      { x: 0.750, y: 0.250, t: 'The cavalry battle', d: 'Horses rearing, riders clashing \u2014 blocked in with rapid wash strokes and never resolved. It competes for space with the staircase and was likely to be painted out.' },
+      { x: 0.250, y: 0.200, t: 'The ruined staircase', d: 'An elaborate architectural ruin, drawn in precise perspective but never coloured. It establishes the depth the scene needs and then he abandoned it.' },
+      { x: 0.600, y: 0.550, t: 'The kneeling kings', d: 'Sketched in brown wash at various degrees of finish. Their postures are studied but their faces are not \u2014 you can see him solving the body first and leaving the expression for later.' },
+      { x: 0.480, y: 0.950, t: 'The foreground floor', d: 'Earth tones laid over the white ground, establishing a plane for the figures to stand on. The simplest passage on the panel and the one that anchors everything else.' },
+    ],
+    constructions: [],
   },
   {
     id: 'girolamo',
@@ -274,7 +396,14 @@ export const WORKS = [
       'Also unfinished. The panel was at some point cut into pieces; the story that the head was found doing service as the seat of a stool in a Roman shop is repeated everywhere and confirmed nowhere.',
     seeing:
       'The saint\u2019s neck and shoulder are worked further than anything else on the panel, and they are anatomically exact \u2014 you can identify the sternocleidomastoid. The lion in the foreground is a few sweeps of wash.',
-    hotspots: [],
+    hotspots: [
+      { x: 0.520, y: 0.300, t: 'The sternocleidomastoid', d: 'The muscle running from behind the ear to the collarbone, rendered with dissection-room precision. He was opening cadavers in these years and mapping what he found onto paint.' },
+      { x: 0.400, y: 0.200, t: 'The penitent\u2019s face', d: 'Gaunt, upturned, mouth open in prayer or anguish. The expression is carried entirely by the anatomy of the neck and jaw \u2014 the face itself is barely modelled.' },
+      { x: 0.350, y: 0.750, t: 'The lion', d: 'A few sweeps of brown wash, barely more than a silhouette. Compare it with the fully resolved anatomy above \u2014 the gap in finish is the whole lesson of the panel.' },
+      { x: 0.700, y: 0.100, t: 'The landscape', d: 'Roughed in with thin wash over the ground. Cliffs and a distant horizon are indicated but never developed \u2014 this panel was set aside, not completed.' },
+      { x: 0.420, y: 0.520, t: 'The right arm', d: 'Extended toward the crucifix (now lost from the composition), the arm carries the same anatomical specificity as the neck. The deltoid and bicep are individually legible.' },
+    ],
+    constructions: [],
   },
   {
     id: 'musico',
@@ -289,7 +418,14 @@ export const WORKS = [
       'The only surviving male portrait generally accepted as his. The sitter has been proposed as several Milanese musicians without agreement; the sheet of music in his hand was uncovered by cleaning in 1904.',
     seeing:
       'The face is finished and the body is not, which throws all the attention onto the eyes. Compare the handling of the curls with Ginevra\u2019s, painted a decade earlier \u2014 the same method, now completely fluent.',
-    hotspots: [],
+    hotspots: [
+      { x: 0.480, y: 0.350, t: 'The face', d: 'Fully resolved: light, shadow, reflected light, the turn of the cheekbone. Everything below the jawline is rough underpainting. The contrast is a statement about where finish matters.' },
+      { x: 0.500, y: 0.220, t: 'The curls', d: 'Each curl catches its own light and casts its own shadow, built up in glazes over a pale ground. Compare with Ginevra\u2019s hair, ten years earlier \u2014 same method, total fluency.' },
+      { x: 0.420, y: 0.680, t: 'The sheet of music', d: 'Uncovered by cleaning in 1904 \u2014 before that it was hidden under later paint. It is the only evidence for the sitter\u2019s profession, and several identifications rest on it.' },
+      { x: 0.530, y: 0.280, t: 'The eyes', d: 'Dark, fixed on something outside the frame, and the sharpest passage on the panel. The unfinished body forces all attention here.' },
+      { x: 0.440, y: 0.500, t: 'The unfinished body', d: 'Blocked in with broad strokes over the ground, the clothing carries no detail. It is a demonstration of what happens when a painter stops: the picture does not collapse, it concentrates.' },
+    ],
+    constructions: [],
   },
   {
     id: 'battesimo',
@@ -304,7 +440,14 @@ export const WORKS = [
       'Verrocchio\u2019s workshop picture, with the young Leonardo given the angel at the far left and much of the landscape. Vasari\u2019s story that Verrocchio put down his brush for good on seeing it is a good story.',
     seeing:
       'You can see the join without being told. The right-hand angel is drawn in crisp tempera outlines; the left-hand one is modelled in oil, turns in space, and is lit by air. Two generations of painting are sharing one panel.',
-    hotspots: [],
+    hotspots: [
+      { x: 0.120, y: 0.550, t: 'Leonardo\u2019s angel', d: 'Modelled in oil rather than tempera, turning in three-quarter view, lit by air rather than by line. It looks like it belongs to the next century. Vasari says Verrocchio set down his brush on seeing it.' },
+      { x: 0.250, y: 0.550, t: 'The workshop angel', d: 'Crisp tempera outlines, frontal, flat lighting. Competent Quattrocento craft \u2014 and a measure of how far the left-hand angel has already travelled beyond it.' },
+      { x: 0.100, y: 0.800, t: 'The landscape', d: 'The soft, atmospheric distance at the left is generally given to Leonardo. It uses the same aerial-perspective technique he would develop for the rest of his life.' },
+      { x: 0.480, y: 0.300, t: 'Christ', d: 'The central figure, by Verrocchio\u2019s design. Solid, clear, legible \u2014 exactly the qualities Leonardo would spend his career dissolving.' },
+      { x: 0.520, y: 0.080, t: 'The dove', d: 'The Holy Spirit, arriving on gold rays. A traditional device, painted by the workshop in the manner the patrons expected.' },
+    ],
+    constructions: [],
   },
   {
     id: 'benois',
@@ -319,7 +462,14 @@ export const WORKS = [
       'Probably one of the \u201ctwo Virgin Marys\u201d he noted starting in 1478. It surfaced in Russia in the nineteenth century and was bought by the Hermitage in 1914.',
     seeing:
       'A young mother playing with a baby, and both of them absorbed in a flower rather than in the viewer or in their own significance. The room is dim, the window behind them is a flat grey rectangle, and nothing is holy except the attention.',
-    hotspots: [],
+    hotspots: [
+      { x: 0.550, y: 0.400, t: 'The flower', d: 'A cruciferous flower \u2014 prefiguring the cross, in the traditional reading. But what makes it new is that both figures are looking at it rather than out at the viewer. The subject is their attention, not their holiness.' },
+      { x: 0.400, y: 0.280, t: 'Mary\u2019s face', d: 'Smiling, young, completely absorbed. No halo, no gravity. This is one of the first paintings to make a sacred figure behave like an ordinary person.' },
+      { x: 0.600, y: 0.600, t: 'The child', d: 'Fat, inattentive, reaching for the flower with the clumsy grasp of a real infant. The anatomy is observed, not idealised.' },
+      { x: 0.750, y: 0.150, t: 'The window', d: 'A flat grey rectangle letting in a cold light. It does nothing decorative \u2014 it is there to justify the illumination on the figures and that is all.' },
+      { x: 0.300, y: 0.700, t: 'The dark room', d: 'Almost nothing is declared about the space. The figures are lit; the room is not. The emptiness concentrates attention on the two faces and the flower between them.' },
+    ],
+    constructions: [],
   },
   {
     id: 'scapigliata',
@@ -334,7 +484,13 @@ export const WORKS = [
       'Small, unfinished, and impossible to categorise \u2014 neither a drawing nor a painting. Its status as autograph has been questioned and, at present, is generally accepted.',
     seeing:
       'The face is brought to full resolution and the hair is left as a storm of scribbled ground. The contrast is the whole point: he is showing what finish costs by putting the finished and the unfinished a centimetre apart.',
-    hotspots: [],
+    hotspots: [
+      { x: 0.500, y: 0.350, t: 'The finished face', d: 'Full sfumato modelling: light, shadow, reflected light, the turn at the temple. Brought to the same resolution as the Mona Lisa and then placed beside its opposite.' },
+      { x: 0.500, y: 0.120, t: 'The storm of hair', d: 'Loose, scribbled, the ground showing through. It is not negligence \u2014 it is a demonstration of what finish costs, by putting the finished and the unfinished a centimetre apart.' },
+      { x: 0.420, y: 0.500, t: 'The neck', d: 'Modelled with the same anatomical precision as the Saint Jerome. The boundary where finish stops and sketch begins runs diagonally across the shoulder.' },
+      { x: 0.580, y: 0.250, t: 'The earth ground', d: 'The panel is prepared with earth pigment rather than the usual white gesso. Every mark reads as dark-on-warm rather than dark-on-light, which gives the whole thing its amber cast.' },
+    ],
+    constructions: [],
   },
 ];
 

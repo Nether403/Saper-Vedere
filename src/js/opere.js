@@ -1,13 +1,15 @@
 /* ============================================================
    Chapter II — Le Opere
-   A plate viewer with a ground-glass lens, a golden-section
-   armature, and annotations that stay shut until asked for.
+   A plate viewer with a ground-glass lens, per-work geometric
+   constructions, and annotations that stay shut until asked for.
    ============================================================ */
 
 import { fieldbookHas, fieldbookToggle } from './fieldbook.js';
+import {
+  phiGrid, phiRectangle, goldenSpiral, orthogonals, pyramid,
+} from './construction.js';
 
 const $ = (s, r = document) => r.querySelector(s);
-const PHI_INV = 0.6180339887;
 
 export function buildOpere({ plateImg, rise, WORKS, PLATES }) {
   const stage = $('[data-opere]');
@@ -59,7 +61,9 @@ export function buildOpere({ plateImg, rise, WORKS, PLATES }) {
     }
   }
 
-  /* ---- the golden-section armature -------------------------- */
+  /* ---- the geometric construction overlay -------------------- */
+
+  let constructionIndex = -1; // -1 = off, 0..n-1 = active construction
 
   function sizeOverlay() {
     const r = img.getBoundingClientRect();
@@ -70,63 +74,89 @@ export function buildOpere({ plateImg, rise, WORKS, PLATES }) {
     overlay.style.width = `${r.width}px`;
     overlay.style.height = `${r.height}px`;
     const ctx = overlay.getContext('2d');
-    // Scale once, then draw in CSS pixels — the maths stays readable.
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    drawArmature(r.width, r.height, ctx);
+    drawConstruction(r.width, r.height, ctx);
   }
 
-  function drawArmature(w, h, ctx) {
+  function segmentsForKind(c) {
+    const p = c.params;
+    switch (c.kind) {
+      case 'phi':
+        return [
+          ...phiGrid(),
+          ...phiRectangle(p.cx, p.cy, p.fill),
+          ...goldenSpiral(p.cx, p.cy, p.fill),
+        ];
+      case 'pyramid':
+        return pyramid(p.apex, p.baseLeft, p.baseRight);
+      case 'orthogonals':
+      case 'perspective':
+        return orthogonals(p.vp, p.edgePoints);
+      default:
+        return [];
+    }
+  }
+
+  function drawConstruction(w, h, ctx) {
     ctx.clearRect(0, 0, w, h);
+    const constructions = state.work.constructions || [];
+    if (constructionIndex < 0 || constructionIndex >= constructions.length) return;
 
-    ctx.lineWidth = 1;
-    ctx.strokeStyle = 'rgba(216, 180, 99, 0.7)';
-    ctx.setLineDash([5, 5]);
-    ctx.beginPath();
-    for (const f of [PHI_INV, 1 - PHI_INV]) {
-      ctx.moveTo(w * f, 0); ctx.lineTo(w * f, h);
-      ctx.moveTo(0, h * f); ctx.lineTo(w, h * f);
+    const c = constructions[constructionIndex];
+    const segments = segmentsForKind(c);
+
+    // φ overlay uses dashed gold for the grid and sanguine for the rectangle/spiral
+    if (c.kind === 'phi') {
+      const grid = phiGrid();
+      const rect = phiRectangle(c.params.cx, c.params.cy, c.params.fill);
+      const spiral = goldenSpiral(c.params.cx, c.params.cy, c.params.fill);
+
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = 'rgba(216, 180, 99, 0.7)';
+      ctx.setLineDash([5, 5]);
+      ctx.beginPath();
+      for (const [[x0, y0], [x1, y1]] of grid) {
+        ctx.moveTo(x0 * w, y0 * h);
+        ctx.lineTo(x1 * w, y1 * h);
+      }
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      ctx.strokeStyle = 'rgba(164, 68, 47, 0.75)';
+      ctx.lineWidth = 1.25;
+      ctx.beginPath();
+      for (const [[x0, y0], [x1, y1]] of rect) {
+        ctx.moveTo(x0 * w, y0 * h);
+        ctx.lineTo(x1 * w, y1 * h);
+      }
+      ctx.stroke();
+
+      ctx.beginPath();
+      for (const [[x0, y0], [x1, y1]] of spiral) {
+        ctx.moveTo(x0 * w, y0 * h);
+        ctx.lineTo(x1 * w, y1 * h);
+      }
+      ctx.stroke();
+    } else {
+      // All other kinds: sanguine lines
+      ctx.strokeStyle = 'rgba(164, 68, 47, 0.75)';
+      ctx.lineWidth = 1.25;
+      ctx.beginPath();
+      for (const [[x0, y0], [x1, y1]] of segments) {
+        ctx.moveTo(x0 * w, y0 * h);
+        ctx.lineTo(x1 * w, y1 * h);
+      }
+      ctx.stroke();
+
+      // Mark the vanishing point for perspective/orthogonals
+      if ((c.kind === 'orthogonals' || c.kind === 'perspective') && c.params.vp) {
+        const [vx, vy] = c.params.vp;
+        ctx.fillStyle = 'rgba(216, 180, 99, 0.9)';
+        ctx.beginPath();
+        ctx.arc(vx * w, vy * h, 4, 0, Math.PI * 2);
+        ctx.fill();
+      }
     }
-    ctx.stroke();
-    ctx.setLineDash([]);
-
-    ctx.strokeStyle = 'rgba(35, 25, 15, 0.22)';
-    ctx.beginPath();
-    ctx.moveTo(0, 0); ctx.lineTo(w, h);
-    ctx.moveTo(w, 0); ctx.lineTo(0, h);
-    ctx.stroke();
-
-    const PHI = 1.6180339887;
-    let rw, rh;
-    if (h >= w) { rw = w; rh = w * PHI; if (rh > h) { rh = h; rw = h / PHI; } }
-    else { rh = h; rw = h * PHI; if (rw > w) { rw = w; rh = w / PHI; } }
-
-    const ox = (w - rw) / 2;
-    const oy = (h - rh) / 2;
-
-    ctx.strokeStyle = 'rgba(164, 68, 47, 0.75)';
-    ctx.lineWidth = 1.25;
-    ctx.beginPath();
-    ctx.rect(ox, oy, rw, rh);
-    ctx.stroke();
-
-    ctx.beginPath();
-    let x = ox, y = oy, bw = rw, bh = rh, dir = 0;
-    for (let i = 0; i < 10; i++) {
-      const s = Math.min(bw, bh);
-      if (s < 2) break;
-      let cx, cy, a0;
-      const d = dir % 4;
-      if (d === 0) { cx = x + s; cy = y + s; a0 = Math.PI; }
-      else if (d === 1) { cx = x + bw - s; cy = y + s; a0 = -Math.PI / 2; }
-      else if (d === 2) { cx = x + bw - s; cy = y + bh - s; a0 = 0; }
-      else { cx = x + s; cy = y + bh - s; a0 = Math.PI / 2; }
-      ctx.arc(cx, cy, s, a0, a0 + Math.PI / 2);
-
-      if (bh > bw) { if (d === 0 || d === 1) y += s; bh -= s; }
-      else { if (d === 0 || d === 3) x += s; bw -= s; }
-      dir++;
-    }
-    ctx.stroke();
   }
 
   /* ---- the lens --------------------------------------------- */
@@ -204,6 +234,18 @@ export function buildOpere({ plateImg, rise, WORKS, PLATES }) {
     if (name === 'phi') {
       overlay.classList.toggle('is-on', on);
       if (on) sizeOverlay();
+      // Show/hide construction verdict
+      const cReadout = stage.querySelector('[data-construction-readout]');
+      if (cReadout) {
+        const constructions = state.work.constructions || [];
+        if (on && constructionIndex >= 0 && constructionIndex < constructions.length) {
+          const c = constructions[constructionIndex];
+          cReadout.hidden = false;
+          cReadout.innerHTML = `<h4>${c.label}</h4><p class="construction-claim">${c.claim}</p><p class="construction-verdict">${c.verdict}</p>`;
+        } else {
+          cReadout.hidden = true;
+        }
+      }
     }
     if (name === 'spots') {
       spotsHost.classList.toggle('is-on', on);
@@ -213,7 +255,24 @@ export function buildOpere({ plateImg, rise, WORKS, PLATES }) {
 
   for (const [name, btn] of Object.entries(tools)) {
     if (!btn) continue;
-    btn.addEventListener('click', () => setTool(name, !state[name]));
+    if (name === 'phi') {
+      // Cycle: off → construction 0 → construction 1 → ... → off
+      btn.addEventListener('click', () => {
+        const constructions = state.work.constructions || [];
+        if (!constructions.length) return;
+        constructionIndex++;
+        if (constructionIndex >= constructions.length) {
+          constructionIndex = -1;
+          setTool('phi', false);
+          btn.textContent = 'Construction';
+        } else {
+          setTool('phi', true);
+          btn.textContent = constructions[constructionIndex].label;
+        }
+      });
+    } else {
+      btn.addEventListener('click', () => setTool(name, !state[name]));
+    }
   }
 
   /* ---- showing a work ---------------------------------------- */
@@ -264,6 +323,20 @@ export function buildOpere({ plateImg, rise, WORKS, PLATES }) {
         sizeOverlay();
         buildSpots(work);
         if (state.spots) spotsHost.classList.add('is-on');
+        // Reset construction state for the new work
+        constructionIndex = -1;
+        const constructions = work.constructions || [];
+        if (!constructions.length) {
+          tools.phi.disabled = true;
+          tools.phi.title = 'No documented construction for this plate';
+          tools.phi.textContent = 'Construction';
+          setTool('phi', false);
+        } else {
+          tools.phi.disabled = false;
+          tools.phi.title = '';
+          tools.phi.textContent = 'Construction';
+          setTool('phi', false);
+        }
       });
     };
 
