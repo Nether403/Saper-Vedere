@@ -40,3 +40,24 @@ Heavy Three.js scenes load only when their chapter approaches the viewport. Thre
 ## Sources & caveats
 
 See the Colophon and object-level credits on the page itself. Historical claims follow Kemp; machine models are proportional readings of the drawings, not measured reconstructions. Artwork licenses vary and are recorded beside each artifact.
+
+## Colophon
+
+**The House of Every Style**  
+**Martin van Deursen** — Design / Development / Research  
+Amsterdam, the Netherlands · [support@101dev.xyz](mailto:support@101dev.xyz)
+
+> *&lt;Bring the hard problem&gt;*  
+> *No tracking beyond your own curiosity*
+
+### Destinations
+- [the1o1.one](https://the1o1.one)
+- [101dev.xyz](https://101dev.xyz)
+- [portal.the1o1.one](https://portal.the1o1.one)
+- [portfolio.the1o1.one](https://portfolio.the1o1.one)
+
+### Socials
+- GitHub: [github.com/Nether403](https://github.com/Nether403)
+- LinkedIn: [linkedin.com/in/mvd101](https://www.linkedin.com/in/mvd101/)
+- Here.Now: [here.now/@nether101](https://here.now/@nether101)
+- Link: [martinvandeursen.link](https://martinvandeursen.link/)

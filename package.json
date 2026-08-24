@@ -3,6 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
+  "author": {
+    "name": "Martin van Deursen",
+    "email": "support@101dev.xyz",
+    "url": "https://101dev.xyz"
+  },
+  "homepage": "https://the1o1.one",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

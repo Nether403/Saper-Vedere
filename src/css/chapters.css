@@ -1077,6 +1077,150 @@
 .colophon .label,
 .colophon .marginalia { color: var(--ink-soft); }
 
+/* ---- Colophon Imprint & Credentials ----------------------------------- */
+
+.colophon-imprint {
+  display: grid;
+  grid-template-columns: minmax(0, 1.618fr) minmax(0, 1fr);
+  gap: var(--s-6);
+  align-items: start;
+  margin-top: var(--s-5);
+}
+@media (max-width: 62rem) {
+  .colophon-imprint {
+    grid-template-columns: 1fr;
+    gap: var(--s-5);
+  }
+}
+
+.imprint-house {
+  font-family: var(--type-label);
+  font-size: var(--t-md);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink);
+  margin: var(--s-2) 0 var(--s-3);
+  font-weight: 500;
+}
+
+.imprint-author {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-1);
+  margin-bottom: var(--s-3);
+}
+
+.imprint-name {
+  font-family: var(--type-display);
+  font-size: var(--t-md);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+}
+
+.imprint-role {
+  font-family: var(--type-label);
+  font-size: 0.62rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--sanguine);
+}
+
+.imprint-locale {
+  font-size: var(--t-sm);
+  font-style: italic;
+  color: var(--ink-soft);
+}
+
+.imprint-contact a {
+  font-size: var(--t-sm);
+  color: var(--ink-soft);
+  text-decoration: underline;
+  text-decoration-color: var(--sanguine-soft);
+  transition: color var(--dur-fast) var(--ease-sfumato), text-decoration-color var(--dur-fast) var(--ease-sfumato);
+}
+.imprint-contact a:hover {
+  color: var(--sanguine);
+  text-decoration-color: var(--sanguine);
+}
+
+.imprint-motto {
+  font-family: var(--type-hand);
+  font-style: italic;
+  font-size: var(--t-base);
+  color: var(--sanguine);
+  letter-spacing: 0.04em;
+  margin: var(--s-2) 0 0;
+}
+
+.imprint-nav {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--s-5);
+}
+@media (max-width: 36rem) {
+  .imprint-nav {
+    grid-template-columns: 1fr;
+    gap: var(--s-4);
+  }
+}
+
+.imprint-group .label {
+  display: block;
+  margin-bottom: var(--s-2);
+  color: var(--ink-faded);
+}
+
+.imprint-links {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--s-2);
+}
+
+.imprint-links a {
+  font-family: var(--type-body);
+  font-size: var(--t-sm);
+  color: var(--ink-soft);
+  text-decoration: underline;
+  text-decoration-color: var(--hairline);
+  transition: color var(--dur-fast) var(--ease-sfumato), text-decoration-color var(--dur-fast) var(--ease-sfumato);
+}
+.imprint-links a:hover {
+  color: var(--sanguine);
+  text-decoration-color: var(--sanguine);
+}
+
+.imprint-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--s-3);
+  margin-top: var(--s-6);
+  padding-top: var(--s-4);
+  border-top: 1px solid var(--hairline-soft);
+}
+
+.imprint-privacy {
+  font-family: var(--type-label);
+  font-size: 0.58rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-faded);
+  margin: 0;
+}
+
+.imprint-copyright {
+  font-family: var(--type-label);
+  font-size: 0.58rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-ghost);
+  margin: 0;
+}
+
 /* ---- Scroll choreography defaults ------------------------------------- */
 /* Content remains visible by default. The animation is an enhancement,
    never a gate that can leave an unvisited part of the codex empty. */

@@ -13,4 +13,14 @@ methods, and cross-disciplinary ideas.
 - [Mirror fieldbook](./#specchio) - mirror-writing interaction
 - [Sources and rights](./#colophon) - sources, rights, and declared departures
 
+## Imprint & Colophon
+
+- Creator: Martin van Deursen (Design / Development / Research, Amsterdam, the Netherlands)
+- Studio: The House of Every Style
+- Contact: support@101dev.xyz
+- Motto: <Bring the hard problem>
+- Policy: No tracking beyond your own curiosity
+- Destinations: https://the1o1.one, https://101dev.xyz, https://portal.the1o1.one, https://portfolio.the1o1.one
+- Socials: https://github.com/Nether403, https://www.linkedin.com/in/mvd101/, https://here.now/@nether101, https://martinvandeursen.link/
+
 Artwork credits and licenses are presented beside individual artifacts.
